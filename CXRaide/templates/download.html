@@ -1,8 +1,83 @@
-<h2>If you are sure about the findings and impressions, you may now download the CXR image annotated.</h2>
-    <div class="images">
-        [put the image here of ai annotated] [put the image here of cxr-image with ground truth]
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <title>CXRaide - Annotation</title>
+  <link rel="stylesheet" href="../static/css/download.css">
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid" id="navbar-container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>                        
+                </button>
+                <a class="navbar-brand" href="#">CXRaide</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- BODY -->
+    <div class="container-fluid text-center">    
+        <div class="row content">
+            <div class="col-sm-2 sidenav">
+                <div class="well">
+                    <p>POINT</p>
+                </div>
+                <div class="well">
+                    <p>RECTANGLE</p>
+                </div>
+                <div class="well">
+                    <p>ZOOM</p>
+                </div>
+                <div class="well">
+                    <p>MOVE</p>
+                </div>
+                <div class="well">
+                    <p>LIGHT</p>
+                </div>
+            </div>
+            <div class="col-sm-8 text-left"> 
+                <div class="text-container">
+                    <h2>If you are sure about the findings and impressions, you may now download the CXR image annotated.</h2>
+                    <hr>
+                    <div class="images">
+                        <img src="../static/images/tentative-cxr.png" alt="">
+                        <img src="../static/images/no-annotation-cxr.png" alt="">
+                    </div>
+                    <div class="buttons">
+                        <a href="{% url 'home' %}">
+                        <br><button>Download and Print</button></a>
+                    </div>               
+                </div>
+            </div>
+            <div class="col-sm-2 sidenav">
+                <h4>Report</h4>
+                <div class="well">
+                    <p>Findings</p>
+                </div>
+                <div class="well">
+                    <p>Impressions</p>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="buttons">
-        <a href="{% url 'login' %}">
-        <br><button>Save</button></a>
-    </div>
+</body>
+</html>

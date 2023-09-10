@@ -1,11 +1,60 @@
-<h1>LOGIN PAGE</h1>
-    <div class="input-logins" id="username">
-        Username: <br><input type="text" name="Username:">
-    </div>
-    <div class="input-logins" id="password">
-        Password: <br><input type="password" name="Password:" id="">
-    </div>
-    <div class="buttons">
-        <a href="{% url 'home' %}">
-        <br><button>Login</button></a>
-    </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../static/css/login.css">
+    <title>CXRaide</title>
+</head>
+<body>
+    <div class="container d-flex justify-content-center align-items-center min-vh-100" id="main-container">
+        <div class="row border rounded-5 p-3 bg-white shadow box-area" id="login-container">
+            <div class="col-md-6 rounded-4 d-flex justify-content-center align-items-center flex-column left-box" style="background: #FF52A2" id="logo-box">
+                <div class="featured-image mb-3">
+                <img src="../static/images/tentative-logo.png" class="img-fluid" style="width: 250px;">
+                </div>
+                <p class="text-white fs-2" style="font-family:Georgia, 'Times New Roman', Times, serif; font-weight: 600;">CXRaide</p>
+                <small class="text-white text-wrap text-center" style="width: 17rem;font-family: 'Courier New', Courier, monospace;">Automatic Chest X-Ray Pattern Annotation and Classification</small>
+            </div>             
+            <div class="col-md-6 right-box" id="field-box">
+                <div class="row align-items-center">
+                    <div class="header-text mb-4">
+                            <h2>Welcome, Doctor</h2>
+                            <p>Let's go and annotate now.</p>
+                    </div>
+                    <form action="{% url 'home' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="Email address" required>
+                        </div>
+                        <div class="input-group mb-1">
+                            <input type="password" class="form-control form-control-lg bg-light fs-6" placeholder="Password" required>
+                        </div>
+                        <div class="input-group mb-5 d-flex justify-content-between">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="formCheck">
+                                <label for="formCheck" class="form-check-label text-secondary"><small>Remember Me</small></label>
+                            </div>
+                            <div class="forgot">
+                                <small><a href="#">Forgot Password?</a></small>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                            <button class="btn btn-lg btn-primary w-100 fs-6" id="login-btn" href=>Login</button>
+                        </div>
+                    </form>
+                    <div class="input-group mb-3">
+                        <button class="btn btn-lg btn-light w-100 fs-6"><img src="../static/images/google.png" style="width:20px" class="me-2"><small>Sign In with Google</small></button>
+                    </div>
+                    <div class="row">
+                        <small>Don't have account? <a href="#">Sign Up</a></small>
+                    </div>
+                </div>
+            </div> 
+
+            </div>
+        </div>
+</body>
+</html>
