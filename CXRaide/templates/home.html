@@ -9,6 +9,8 @@
   <title>CXRaide - Home</title>
   <link rel="stylesheet" href="../static/css/home.css">
 </head>
+
+{% load static %}
 <body>
     <!-- NAVBAR -->
     <nav class="navbar navbar-inverse">
@@ -37,34 +39,39 @@
     <!-- BODY -->
     <div class="container-fluid text-center">    
         <div class="row content">
-            <div class="col-sm-2 sidenav">
+            <div class="col-sm-2 sidenav" id="tools-container">
                 <div class="well">
+                    <img src="../static/images/point-icon.png" alt="" id="point-icon">
                     <p>POINT</p>
                 </div>
                 <div class="well">
-                    <p>RECTANGLE</p>
+                    <img src="../static/images/box-icon.png" alt="" id="box-icon">
+                    <p>BOX</p>
                 </div>
                 <div class="well">
+                    <img src="../static/images/zoom-icon.png" alt="" id="zoom-icon">
                     <p>ZOOM</p>
                 </div>
                 <div class="well">
+                    <img src="../static/images/move-icon.png" alt="" id="move-icon">
                     <p>MOVE</p>
                 </div>
                 <div class="well">
+                    <img src="../static/images/light-icon.png" alt="" id="light-icon">
                     <p>LIGHT</p>
                 </div>
             </div>
             <div class="col-sm-8 text-left"> 
                 <div class="text-container">
-                    <h1>WELCOME! Dr.{{name}}</h1>
+                    <h1>WELCOME! Doctor</h1>
                     <hr>
-                    <div class="uploads">
-                        Upload CXR Image: <input type="file" required>
-                    </div>
-                    <div class="buttons">
-                        <a href="{% url 'generate-cxr' %}">
-                        <br><button>Load Image</button></a>
-                    </div>
+                    <form action="#" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                            <input type="file" name="raw_cxray">
+                            <div class="button">
+                                <button class="submit" type="submit">Load Image</button>
+                            </div>
+                    </form>
                 </div>
             </div>
             <div class="col-sm-2 sidenav">

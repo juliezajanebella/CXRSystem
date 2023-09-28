@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,20 +39,25 @@
     <!-- BODY -->
     <div class="container-fluid text-center">    
         <div class="row content">
-            <div class="col-sm-2 sidenav">
-                <div class="well">
+            <div class="col-sm-2 sidenav" id="tools-container">
+                <div class="well" id="point-icon">
+                    <img src="../static/images/point-icon.png" alt="">
                     <p>POINT</p>
                 </div>
-                <div class="well">
-                    <p>RECTANGLE</p>
+                <div class="well" id="box-icon">
+                    <img src="../static/images/box-icon.png" alt="">
+                    <p>BOX</p>
                 </div>
-                <div class="well">
+                <div class="well" id="zoom-icon">
+                    <img src="../static/images/zoom-icon.png" alt="">
                     <p>ZOOM</p>
                 </div>
-                <div class="well">
+                <div class="well" id="move-icon">
+                    <img src="../static/images/move-icon.png" alt="">
                     <p>MOVE</p>
                 </div>
-                <div class="well">
+                <div class="well" id="light-icon">
+                    <img src="../static/images/light-icon.png" alt="">
                     <p>LIGHT</p>
                 </div>
             </div>
@@ -58,13 +65,31 @@
                 <div class="text-container">
                     <h1>Side-by-Side CXR Image: AI | Editable by Experts</h1>
                     <hr>
-                    <div class="images">
+                    {% for img in raw_image %}
+                        <div>
+                            <img src="{{ img.image.url }}"  height="200" width="200">
+                        </div>
+                        <div>
+                            <h1>{{ img.name }}</h1>
+                            <h2>{{ image.designation }}</h2>
+                        </div>
+                    
+                    {% endfor %}
+
+
+
+
+
+
+
+
+                    <!-- <div class="images">
                         <img src="../static/images/tentative-cxr.png" alt="">
-                        <img src="../static/images/no-annotation-cxr.png" alt="">
+                        <img src="../static/images/no-annotation-cxr.png" alt="" >
                     </div>
                     <div class="button">
                         <a href="{% url 'download' %}">
-                        <br><button>Save</button></a>
+                        <br><button>Save</button></a> -->
                     </div>
                 </div>
             </div>

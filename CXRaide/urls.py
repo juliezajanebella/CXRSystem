@@ -3,7 +3,7 @@
 # Mapping URL to views
 
 from django.urls import path
-from CXRaide import views  
+from . import views
 
 # url patterns in an array
 urlpatterns = [
@@ -12,5 +12,5 @@ urlpatterns = [
     path('generate-cxr/', views.generate_cxr, name='generate-cxr'),
     path('annotation-edit/', views.annotation_edit, name='annotations-edit'),
     path('download/', views.download, name='download')
-
 ]
+
