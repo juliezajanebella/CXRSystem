@@ -6,7 +6,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages                           # alert messages
 from django.contrib.auth.models import User
-from .models import Radiologist
+from .models import Radiologist, RawXray
+from CXRaide.functions import handle_uploaded_file
 from django.contrib.auth import authenticate, login
 
 
@@ -14,8 +15,8 @@ from django.contrib.auth import authenticate, login
 def user_login(request): 
     if request.method == 'POST':
         # input from user
-        username = request.POST['username']               
-        password = request.POST['password']
+        username = request.POST.get('username')              
+        password = request.POST.get('password') 
 
         # data from database
         cxraide_admin = authenticate(request, username=username, password=password)
@@ -26,12 +27,25 @@ def user_login(request):
             messages.success(request, 'CXRaide ADMIN')
             return redirect('admin/')
         elif radiologist:
-            return render(request, 'home.html')              
+            return redirect('home/')              
         else:
             messages.error(request, 'Invalid Username or Password.')
     return render(request, 'login.html') 
 
 def home(request):
+    if request.method == 'POST':
+        # fetching user input
+        raw_cxray_name = request.POST.get('raw_cxray_name')
+        raw_cxray = request.FILES["raw_cxray"]
+
+        # calling function handler for upload image
+        handle_uploaded_file(raw_cxray)
+
+        # 'create' is like an insert function in database
+        # first raw_cxray_name is from database, the equivalent (=) is from the form/user
+        RawXray.objects.create(raw_cxray_name=raw_cxray_name, raw_cxray=raw_cxray)
+        return render(request, 'generateCXR.html') 
+
     return render(request, 'home.html')
 
 

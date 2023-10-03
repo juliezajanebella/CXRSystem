@@ -24,7 +24,7 @@
                             <h2>Welcome, Doctor</h2>
                             <p>Let's go and annotate now.</p>
                     </div>
-                    <form action="{% url 'home' %}" method="POST">
+                    <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="input-group mb-3">
                             <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="Username" name="username" required>

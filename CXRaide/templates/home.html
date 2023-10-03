@@ -31,13 +31,13 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+                    <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
                 </ul>
             </div>
         </div>
     </nav>
     <!-- BODY -->
-    <div class="container-fluid text-center">    
+    <div class="container-fluid text-center">   
         <div class="row content">
             <div class="col-sm-2 sidenav" id="tools-container">
                 <div class="well">
@@ -62,16 +62,22 @@
                 </div>
             </div>
             <div class="col-sm-8 text-left"> 
+                {% include 'CXRaide/includes/message.html' %} 
                 <div class="text-container">
                     <h1>WELCOME! Doctor</h1>
                     <hr>
-                    <form action="#" method="POST" enctype="multipart/form-data">
+                    <form  method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
-                            <input type="file" name="raw_cxray">
-                            <div class="button">
-                                <button class="submit" type="submit">Load Image</button>
-                            </div>
-                    </form>
+                        <div>
+                            <input type="text" name="raw_cxray_name" placeholder="Name" required>
+                            <input type="file" name="raw_cxray" required>
+                            <br><button>Load Image</button>    
+                        </div>
+                        <!-- <div class="buttons" id="home">
+                            <a href="{% url 'generate-cxr' %}">
+                            <hr><button>Load Image</button></a>
+                        </div> -->
+                    </form>  
                 </div>
             </div>
             <div class="col-sm-2 sidenav">
