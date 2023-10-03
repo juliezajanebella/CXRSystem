@@ -63,11 +63,14 @@
                 <div class="text-container">
                     <h1>CXR Image</h1>
                     <hr>
-                    <div class="cxr-image">
-                        <img src="../static/images/tentative-cxr.png" alt="">
+                    <!-- display image -->
+                    <div class="cxr-image"> 
+                        <p>Raw CXRay Name: {{ raw_cxray_name }}</p>
+                        <img src="../static/upload/{{raw_cxray}}" alt={{ raw_cxray }} height="30%" width="20%">
                     </div>
+                    <hr>
                     <div class="buttons" id="update-cxr">
-                        <a href="{% url 'home' %}"><br><button>Update</button></a>
+                        <a href="{% url 'update' %}"><br><button>Update</button></a>
                     </div>
                     <div class="buttons" id="generate-cxr">
                         <a href="{% url 'annotations-edit' %}">

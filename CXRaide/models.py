@@ -4,7 +4,7 @@ from django.db import models
 class RawXray(models.Model): # for raw xray images
     raw_cxray_id = models.AutoField(primary_key=True, verbose_name='Raw CXray Image ID')
     raw_cxray_name = models.CharField(max_length=100, verbose_name='Raw CXRay Name')
-    raw_cxray = models.FileField(upload_to='media/', verbose_name='Raw CXray Image')
+    raw_cxray = models.FileField(upload_to="", verbose_name='Raw CXray Image')
     
     def __str__(self):
         return self.raw_cxray_id

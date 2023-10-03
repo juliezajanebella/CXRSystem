@@ -6,9 +6,11 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <title>CXRaide - Annotation</title>
-  <link rel="stylesheet" href="../static/css/download.css">
+  <title>CXRaide - Home</title>
+  <link rel="stylesheet" href="../static/css/home.css">
 </head>
+
+{% load static %}
 <body>
     <!-- NAVBAR -->
     <nav class="navbar navbar-inverse">
@@ -29,13 +31,13 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+                    <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
                 </ul>
             </div>
         </div>
     </nav>
     <!-- BODY -->
-    <div class="container-fluid text-center">    
+    <div class="container-fluid text-center">   
         <div class="row content">
             <div class="col-sm-2 sidenav" id="tools-container">
                 <div class="well">
@@ -60,26 +62,29 @@
                 </div>
             </div>
             <div class="col-sm-8 text-left"> 
+                {% include 'CXRaide/includes/message.html' %} 
                 <div class="text-container">
-                    <h2>If you are sure about the findings and impressions, you may now download the CXR image annotated.</h2>
+                    <h1>WELCOME! Doctor</h1>
                     <hr>
-                    <div class="images">
-                        <img src="../static/images/tentative-cxr.png" alt="">
-                        <img src="../static/images/no-annotation-cxr.png" alt="">
-                    </div>
-                    <div class="buttons">
-                        <a href="{% url 'home' %}">
-                        <br><button>Download and Print</button></a>
-                    </div>               
+                    <form action="{% url 'generate-cxr' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        Name: <input type="text" name="raw_cxray_name" placeholder="Enter Here" required>
+                        <input type="file" name="raw_cxray" required>
+                        <br>Name: <input type="text" name="raw_cxray_name" placeholder="Enter Here" required>
+                        <hr>
+                        <br><button>Load Image</button>    
+                    </form>  
                 </div>
             </div>
             <div class="col-sm-2 sidenav">
-                <h4>Report</h4>
                 <div class="well">
-                    <p>Findings</p>
+                    <p></p>
                 </div>
                 <div class="well">
-                    <p>Impressions</p>
+                    <p></p>
+                </div>
+                <div class="well">
+                    <p></p>
                 </div>
             </div>
         </div>

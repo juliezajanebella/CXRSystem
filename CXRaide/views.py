@@ -38,23 +38,47 @@ def home(request):
         raw_cxray_name = request.POST.get('raw_cxray_name')
         raw_cxray = request.FILES["raw_cxray"]
 
-        # calling function handler for upload image
+        # calling the handler of uploaded file
         handle_uploaded_file(raw_cxray)
-
-        # 'create' is like an insert function in database
-        # first raw_cxray_name is from database, the equivalent (=) is from the form/user
         RawXray.objects.create(raw_cxray_name=raw_cxray_name, raw_cxray=raw_cxray)
-        return render(request, 'generateCXR.html') 
 
-    return render(request, 'home.html')
+        return (raw_cxray_name, raw_cxray)  # Return the values as a tuple
 
+    return render(request, 'home.html')   # Return None if no file was uploaded
 
 def generate_cxr(request):
-    return render(request, 'generateCXR.html') # AI able to annotate
+    generate_cxray = home(request)
+
+    if generate_cxray:
+        raw_cxray_name, raw_cxray = generate_cxray
+        
+        context = {'raw_cxray_name': raw_cxray_name, 'raw_cxray': raw_cxray}
+        return render(request, 'generateCXR.html', context)
+
+    # If no data was uploaded, render the template without context
+    return render(request, 'generateCXR.html')
 
 
 def annotation_edit(request):
     return render(request, 'annotationEdit.html')
  
-def download(request):
-    return render(request, 'download.html') # final and annotated CXR image
+def update(request):
+    if request.method == 'POST':
+        # fetching user input
+        updated_raw_cxray_name = request.POST.get('raw_cxray_name')
+        updated_raw_cxray = request.FILES["raw_cxray"]
+
+        update = home(request)
+
+        if update:
+            raw_cxray_name, raw_cxray = update
+
+        # calling the handler of uploaded file
+        handle_uploaded_file(raw_cxray)
+        input = RawXray.objects.filter(raw_cxray_name=raw_cxray_name).exists
+
+        if input:
+            RawXray.objects.update(raw_cxray_name=updated_raw_cxray_name, raw_cxray=updated_raw_cxray)
+
+    
+    return render(request, 'update.html') # final and annotated CXR image

@@ -11,6 +11,6 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('generate-cxr/', views.generate_cxr, name='generate-cxr'),
     path('annotation-edit/', views.annotation_edit, name='annotations-edit'),
-    path('download/', views.download, name='download')
+    path('update/', views.update, name='update')
 ]
 
