@@ -58,27 +58,32 @@ def generate_cxr(request):
     # If no data was uploaded, render the template without context
     return render(request, 'generateCXR.html')
 
+def update(request):
+    if request.method == 'POST':
+        # fetching user input
+        prev_raw_cxray_name = request.POST.get('prev_raw_cxray_name')
+        updated_raw_cxray_name = request.POST.get('raw_cxray_name')
+        updated_raw_cxray = request.FILES["raw_cxray"]
+
+        # calling the handler of uploaded file
+        handle_uploaded_file(updated_raw_cxray)
+
+        # fetching the previous input of the user / from the database
+        current_input = RawXray.objects.filter(raw_cxray_name=prev_raw_cxray_name).exists()
+
+        if current_input:
+            update = RawXray.objects.get(raw_cxray_name=prev_raw_cxray_name)
+            update.raw_cxray_name = updated_raw_cxray_name
+            update.raw_cxray = updated_raw_cxray
+            update.save()
+            
+            context = {'raw_cxray_name': updated_raw_cxray_name, 'raw_cxray': updated_raw_cxray}
+            return render(request, 'generateCXR.html', context)
+        
+    return render(request, 'update.html') # final and annotated CXR image
+
 
 def annotation_edit(request):
     return render(request, 'annotationEdit.html')
  
-def update(request):
-    if request.method == 'POST':
-        # fetching user input
-        updated_raw_cxray_name = request.POST.get('raw_cxray_name')
-        updated_raw_cxray = request.FILES["raw_cxray"]
 
-        update = home(request)
-
-        if update:
-            raw_cxray_name, raw_cxray = update
-
-        # calling the handler of uploaded file
-        handle_uploaded_file(raw_cxray)
-        input = RawXray.objects.filter(raw_cxray_name=raw_cxray_name).exists
-
-        if input:
-            RawXray.objects.update(raw_cxray_name=updated_raw_cxray_name, raw_cxray=updated_raw_cxray)
-
-    
-    return render(request, 'update.html') # final and annotated CXR image

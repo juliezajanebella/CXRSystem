@@ -6,7 +6,8 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <title>CXRaide - Home</title>
+  <!-- UPDATE PAGE -->
+  <title>CXRaide - Home</title> 
   <link rel="stylesheet" href="../static/css/home.css">
 </head>
 
@@ -66,9 +67,10 @@
                 <div class="text-container">
                     <h1>WELCOME! Doctor</h1>
                     <hr>
-                    <form action="{% url 'generate-cxr' %}" method="POST" enctype="multipart/form-data">
+                    <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
-                        Name: <input type="text" name="raw_cxray_name" placeholder="Enter Here" required>
+                        Current Image Name: <input type="text" name="prev_raw_cxray_name" placeholder="Enter Current Image">
+                        <br><br>New Image : <input type="text" name="raw_cxray_name" placeholder="Enter Here" required>
                         <br><br><input type="file" name="raw_cxray" required>
                         <hr>
                         <br><button>Load Image</button>    
