@@ -3,6 +3,7 @@
 # Request -> Response
 # Action
 
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages                           # alert messages
 from django.contrib.auth.models import User
@@ -32,6 +33,7 @@ def user_login(request):
             messages.error(request, 'Invalid Username or Password.')
     return render(request, 'login.html') 
 
+
 def home(request):
     if request.method == 'POST':
         # fetching user input
@@ -43,20 +45,22 @@ def home(request):
         RawXray.objects.create(raw_cxray_name=raw_cxray_name, raw_cxray=raw_cxray)
 
         return (raw_cxray_name, raw_cxray)  # Return the values as a tuple
-
+    
     return render(request, 'home.html')   # Return None if no file was uploaded
 
-def generate_cxr(request):
+
+def generate_cxr_home(request):
     generate_cxray = home(request)
 
     if generate_cxray:
         raw_cxray_name, raw_cxray = generate_cxray
-        
+
         context = {'raw_cxray_name': raw_cxray_name, 'raw_cxray': raw_cxray}
         return render(request, 'generateCXR.html', context)
-
+    
     # If no data was uploaded, render the template without context
     return render(request, 'generateCXR.html')
+
 
 def update(request):
     if request.method == 'POST':
@@ -76,14 +80,35 @@ def update(request):
             update.raw_cxray_name = updated_raw_cxray_name
             update.raw_cxray = updated_raw_cxray
             update.save()
-            
-            context = {'raw_cxray_name': updated_raw_cxray_name, 'raw_cxray': updated_raw_cxray}
-            return render(request, 'generateCXR.html', context)
+
+            return (updated_raw_cxray_name, updated_raw_cxray)
         
     return render(request, 'update.html') # final and annotated CXR image
 
 
-def annotation_edit(request):
+def generate_cxr_update(request):
+    generate_cxray = update(request)
+
+    if generate_cxray:
+        updated_raw_cxray_name, updated_raw_cxray = generate_cxray
+        
+        context = {'raw_cxray_name': updated_raw_cxray_name, 'raw_cxray': updated_raw_cxray}
+        return render(request, 'generateCXR.html', context)
+
+    # If no data was uploaded, render the template without context
+    return render(request, 'generateCXR.html')
+
+
+def annotations_edit(request):
+    # NOTHING WORKING :(
+        # kuhaa ang ID
+        # query parameters 
+        # 
+    
     return render(request, 'annotationEdit.html')
+    
+def download(request):
+    
+    return render(request, 'download.html')
  
 
