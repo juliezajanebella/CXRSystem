@@ -69,11 +69,11 @@
                     <hr>
                     <form action="{% url 'generate-cxr-update' %}" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
-                        Current Image Name: <input type="text" name="prev_raw_cxray_name" placeholder="Enter Current Image">
+                        Current Image Name: <input type="text" name="prev_raw_cxray_name" placeholder="Enter Current Image" required>
                         <br><br>New Image Name: <input type="text" name="raw_cxray_name" placeholder="Enter Here" required>
                         <br><br><input type="file" name="raw_cxray" required>
                         <hr>
-                        <br><button>Load Image</button>    
+                        <br><button>Update Image</button>    
                     </form>  
                 </div>
             </div>

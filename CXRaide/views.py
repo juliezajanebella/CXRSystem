@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 from .models import Radiologist, RawXray
 from CXRaide.functions import handle_uploaded_file
 from django.contrib.auth import authenticate, login
+from django.shortcuts import get_object_or_404
+
 
 
 # function
@@ -45,7 +47,7 @@ def home(request):
         RawXray.objects.create(raw_cxray_name=raw_cxray_name, raw_cxray=raw_cxray)
 
         return (raw_cxray_name, raw_cxray)  # Return the values as a tuple
-    
+        
     return render(request, 'home.html')   # Return None if no file was uploaded
 
 
@@ -99,11 +101,15 @@ def generate_cxr_update(request):
     return render(request, 'generateCXR.html')
 
 
-def annotations_edit(request):
+def annotations_edit(request, ):
     # NOTHING WORKING :(
         # kuhaa ang ID
         # query parameters 
-        # 
+    
+    # TRY HUHU
+  
+
+
     
     return render(request, 'annotationEdit.html')
     
