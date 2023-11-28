@@ -46,23 +46,46 @@ def home(request):
         handle_uploaded_file(raw_cxray)
         RawXray.objects.create(raw_cxray_name=raw_cxray_name, raw_cxray=raw_cxray)
 
-        return (raw_cxray_name, raw_cxray)  # Return the values as a tuple
+        # Get the last created RawXray object
+        raw_xray_obj = RawXray.objects.last()
+
+        if raw_xray_obj:
+            return redirect('annotation_edit', raw_xray_id=raw_xray_obj.id)
+        else:
+            # Handle error if RawXray object is not found
+            pass
+
+        # return (raw_cxray_name, raw_cxray)  # Return the values as a tuple
+        context = {'raw_cxray_name': raw_cxray_name, 'raw_cxray': raw_cxray}
+        return render(request, 'generateCXR.html', context)
         
     return render(request, 'home.html')   # Return None if no file was uploaded
 
 
-def generate_cxr_home(request):
-    generate_cxray = home(request)
+def annotation_edit(request):
+    # generate_cxray = home(request)
 
-    if generate_cxray:
-        raw_cxray_name, raw_cxray = generate_cxray
+    # if generate_cxray:
+    #     raw_cxray_name = generate_cxray.request.get('raw_cxray_name')
+    #     raw_cxray = generate_cxray.request.get('raw_cxray')
 
-        context = {'raw_cxray_name': raw_cxray_name, 'raw_cxray': raw_cxray}
-        return render(request, 'generateCXR.html', context)
+    #     context = {'raw_cxray_name': raw_cxray_name, 'raw_cxray': raw_cxray}
+    #     return render(request, 'annotationEdit.html', context)
     
-    # If no data was uploaded, render the template without context
-    return render(request, 'generateCXR.html')
+    # # If no data was uploaded, render the template without context
+    # return render(request, 'annotationEdit.html')
+    raw_xray_obj = RawXray.objects.last()
 
+    if raw_xray_obj:
+        raw_cxray_name = raw_xray_obj.raw_cxray_name
+        raw_cxray = raw_xray_obj.raw_cxray
+
+        # Use raw_cxray_name and raw_cxray in your logic or pass to context for rendering
+        context = {'raw_cxray_name': raw_cxray_name, 'raw_cxray': raw_cxray}
+        return render(request, 'annotationEdit.html', context)
+    else:
+        # Handle case when RawXray object is not found
+        pass
 
 def update(request):
     if request.method == 'POST':
@@ -83,35 +106,36 @@ def update(request):
             update.raw_cxray = updated_raw_cxray
             update.save()
 
-            return (updated_raw_cxray_name, updated_raw_cxray)
+            context = {'raw_cxray_name': updated_raw_cxray_name, 'raw_cxray': updated_raw_cxray}
+            return render(request, 'generateCXR.html', context)
         
     return render(request, 'update.html') # final and annotated CXR image
 
 
-def generate_cxr_update(request):
-    generate_cxray = update(request)
+# def generate_cxr_update(request):
+#     generate_cxray = update(request)
 
-    if generate_cxray:
-        updated_raw_cxray_name, updated_raw_cxray = generate_cxray
+#     if generate_cxray:
+#         updated_raw_cxray_name, updated_raw_cxray = generate_cxray
         
-        context = {'raw_cxray_name': updated_raw_cxray_name, 'raw_cxray': updated_raw_cxray}
-        return render(request, 'generateCXR.html', context)
+#         context = {'raw_cxray_name': updated_raw_cxray_name, 'raw_cxray': updated_raw_cxray}
+#         return render(request, 'generateCXR.html', context)
 
-    # If no data was uploaded, render the template without context
-    return render(request, 'generateCXR.html')
+#     # If no data was uploaded, render the template without context
+#     return render(request, 'generateCXR.html')
 
 
-def annotations_edit(request, ):
-    # NOTHING WORKING :(
-        # kuhaa ang ID
-        # query parameters 
+# def annotations_edit(request, ):
+#     # NOTHING WORKING :(
+#         # kuhaa ang ID
+#         # query parameters 
     
-    # TRY HUHU
+#     # TRY HUHU
   
 
 
     
-    return render(request, 'annotationEdit.html')
+#     return render(request, 'annotationEdit.html')
     
 def download(request):
     

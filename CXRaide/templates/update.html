@@ -67,7 +67,7 @@
                 <div class="text-container">
                     <h1>WELCOME! Doctor</h1>
                     <hr>
-                    <form action="{% url 'generate-cxr-update' %}" method="POST" enctype="multipart/form-data">
+                    <form action="" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         Current Image Name: <input type="text" name="prev_raw_cxray_name" placeholder="Enter Current Image" required>
                         <br><br>New Image Name: <input type="text" name="raw_cxray_name" placeholder="Enter Here" required>
