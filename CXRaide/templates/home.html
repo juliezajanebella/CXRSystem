@@ -66,7 +66,7 @@
                 <div class="text-container">
                     <h1>WELCOME! Doctor</h1>
                     <hr>
-                    <form action="{% url 'annotation-edit' %}" method="POST" enctype="multipart/form-data">
+                    <form action="" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         Image Caption: <input type="text" name="raw_cxray_name" value="{{ raw_cxray_name }}" placeholder="Enter Here" required>
                         <br><br><input type="file" name="raw_cxray" value="{{ raw_cxray }}" required>
