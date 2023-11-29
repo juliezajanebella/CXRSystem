@@ -10,10 +10,9 @@ from django.contrib.auth.models import User
 from .models import Radiologist, RawXray
 from CXRaide.functions import handle_uploaded_file
 from django.contrib.auth import authenticate, login
-from django.shortcuts import get_object_or_404
 
 
-# function
+# main functions
 def user_login(request): 
     if request.method == 'POST':
         # input from user
@@ -93,5 +92,7 @@ def annotation_edit(request):
 def download(request):
     
     return render(request, 'download.html')
+
+
  
 
