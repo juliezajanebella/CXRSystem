@@ -26,8 +26,8 @@
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
                     <li class="active"><a href="#">Home</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="{% url 'about' %}">About</a></li>
+                    <li><a href="{% url 'contact' %}">Contact Us</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
@@ -42,23 +42,23 @@
             <div class="col-sm-2 sidenav" id="tools-container">
                 <div class="well">
                     <img src="../static/images/point-icon.png" alt="" id="point-icon">
-                    <p>POINT</p>
+                    <p class="point-button">POINT</p>
                 </div>
                 <div class="well">
                     <img src="../static/images/box-icon.png" alt="" id="box-icon">
-                    <p>BOX</p>
+                    <p class="box-button">BOX</p>
                 </div>
                 <div class="well">
                     <img src="../static/images/zoom-icon.png" alt="" id="zoom-icon">
-                    <p>ZOOM</p>
-                </div>
-                <div class="well">
-                    <img src="../static/images/move-icon.png" alt="" id="move-icon">
-                    <p>MOVE</p>
+                    <p class="zoom-button">ZOOM</p>
                 </div>
                 <div class="well">
                     <img src="../static/images/light-icon.png" alt="" id="light-icon">
-                    <p>LIGHT</p>
+                    <p class="light-button">LIGHT</p>
+                </div>
+                <div class="well">
+                    <img src="../static/images/undo-redo-icon.png" alt="" id="move-icon">
+                    <p class="undo-redo-button">UNDO and REDO</p>
                 </div>
             </div>
             <div class="col-sm-8 text-left"> 

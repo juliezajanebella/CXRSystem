@@ -34,6 +34,14 @@ def user_login(request):
     return render(request, 'login.html') 
 
 
+def about(request):
+    return render(request, 'about.html')
+
+
+def contact(request):
+    return render(request, 'contact.html')
+
+
 def home(request):
     if request.method == 'POST':
         # fetching user input

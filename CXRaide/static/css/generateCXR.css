@@ -26,23 +26,40 @@
   }
   
   
-  .row.content {
-    height: 597px
-  }
+.row.content {
+  height: 597px
+}
+.sidenav {
+  padding-top: 20px;
+  background-color: #f1f1f1;
+  height: 100%;
+}
+
+/* On small screens, set height to 'auto' for sidenav and grid */
+@media screen and (max-width: 767px) {
   .sidenav {
-    padding-top: 20px;
-    background-color: #f1f1f1;
-    height: 100%;
+    height: auto;
+    padding: 15px;
   }
-  
-  /* On small screens, set height to 'auto' for sidenav and grid */
-  @media screen and (max-width: 767px) {
-    .sidenav {
-      height: auto;
-      padding: 15px;
-    }
-    .row.content {
-      height:auto;
-    } 
-  }
+  .row.content {
+    height:auto;
+  } 
+}
+
+/* TOOLS (box, point, zoom, move, light) */
+.box-button {
+  margin-top: 10px;
+}
+.point-button {
+  margin-top: 10px;
+}
+.zoom-button {
+  margin-top: 10px;
+}
+.undo-redo-button {
+  margin-top: 10px;
+}
+.light-button {
+  margin-top: 10px;
+}  
   

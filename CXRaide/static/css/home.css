@@ -49,3 +49,19 @@
   } 
 }
 
+/* TOOLS (box, point, zoom, move, light) */
+.box-button {
+  margin-top: 10px;
+}
+.point-button {
+  margin-top: 10px;
+}
+.zoom-button {
+  margin-top: 10px;
+}
+.undo-redo-button {
+  margin-top: 10px;
+}
+.light-button {
+  margin-top: 10px;
+}  

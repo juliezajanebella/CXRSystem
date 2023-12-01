@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <title>CXRaide - Generate</title>
-    <link rel="stylesheet" href="../static/css/generateCXR.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <title>CXRaide - Contact Us</title>
+  <link rel="stylesheet" href="../static/css/contact.css">
 </head>
+
+{% load static %}
 <body>
     <!-- NAVBAR -->
     <nav class="navbar navbar-inverse">
@@ -25,7 +27,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{% url 'home' %}">Home</a></li>
                     <li><a href="{% url 'about' %}">About</a></li>
-                    <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                    <li class="active"><a href="#">Contact Us</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
@@ -35,41 +37,32 @@
         </div>
     </nav>
     <!-- BODY -->
-    <div class="container-fluid text-center">    
+    <div class="container-fluid text-center">   
         <div class="row content">
             <div class="col-sm-2 sidenav" id="tools-container">
                 <div class="well">
                     <img src="../static/images/point-icon.png" alt="" id="point-icon">
-                    <p>POINT</p>
+                    <p class="point-button">POINT</p>
                 </div>
                 <div class="well">
                     <img src="../static/images/box-icon.png" alt="" id="box-icon">
-                    <p>BOX</p>
+                    <p class="box-button">BOX</p>
                 </div>
                 <div class="well">
                     <img src="../static/images/zoom-icon.png" alt="" id="zoom-icon">
-                    <p>ZOOM</p>
-                </div>
-                <div class="well">
-                    <img src="../static/images/move-icon.png" alt="" id="move-icon">
-                    <p>MOVE</p>
+                    <p class="zoom-button">ZOOM</p>
                 </div>
                 <div class="well">
                     <img src="../static/images/light-icon.png" alt="" id="light-icon">
-                    <p>LIGHT</p>
+                    <p class="light-button">LIGHT</p>
+                </div>
+                <div class="well">
+                    <img src="../static/images/undo-redo-icon.png" alt="" id="move-icon">
+                    <p class="undo-redo-button">UNDO and REDO</p>
                 </div>
             </div>
             <div class="col-sm-8 text-left"> 
-                <div class="text-container">
-                    <h2>If you are sure about the findings and impressions, you may now download the CXR image annotated.</h2>
-                    <div class="images">
-                        [put the image here of ai annotated] [put the image here of cxr-image with ground truth]
-                    </div>
-                    <div class="buttons">
-                        <a href="{% url 'home' %}">
-                        <br><button>Download</button></a>
-                    </div>                
-                </div>
+                <h1>Contact Us</h1>
             </div>
             <div class="col-sm-2 sidenav">
                 <div class="well">
