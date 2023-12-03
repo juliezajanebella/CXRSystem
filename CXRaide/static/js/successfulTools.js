@@ -1,10 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     var boxButton = document.getElementById('box-button');
     var pointButton = document.getElementById('point-button');
-    var zoomButton = document.getElementById('zoom-button');
-    var imageToZoom = document.getElementById('image-to-zoom');
-    var divContainer = document.getElementById('raw-cxray-div');
-
     var stage = new Konva.Stage({
         container: 'box-container',
         width: 500,
@@ -18,10 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var currentGroup;
     var currentTransformer;
     var pointTransformer;
-    var zoomScale = 1;
-    var maxZoomScale = 5;
 
-    // Create Konva shapes and transformers
     function createBox() {
         var group = new Konva.Group({ draggable: true });
         var box = new Konva.Rect({
@@ -64,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
         layer.add(pointTransformer);
     }
 
-    // Attach transformer to points
+    // Function to create and handle the transformer for points
     function attachTransformerToPoint(point) {
     // Ensure the existing transformer is detached
         if (currentTransformer) {
@@ -94,63 +87,12 @@ document.addEventListener('DOMContentLoaded', function () {
         layer.draw();
     }
 
-    // Handle point click
     function handlePointClick(point) {
         pointTransformer.nodes([point]);
         pointTransformer.visible(true);
         layer.draw();
     }
 
-    // Apply or reset zoom on the image
-
-    // Function to apply or reset zoom on the image
-    function applyZoom(newScale) {
-        // Update the zoom scale
-        zoomScale = newScale;
-    
-        // Apply the transformation to the image
-        imageToZoom.style.transform = `scale(${zoomScale})`;
-        // Adjust the transform origin to ensure the image scales from the top-left corner
-        imageToZoom.style.transformOrigin = 'top left';
-    
-        // Make sure the divContainer has overflow hidden to prevent the image from spilling out
-        divContainer.style.overflow = 'auto';
-    
-        // Update the container's scrollable size based on the zoomScale
-        divContainer.scrollWidth = imageToZoom.clientWidth * zoomScale;
-        divContainer.scrollHeight = imageToZoom.clientHeight * zoomScale;
-    }
-
-    // Function to calculate and constrain the new zoom scale
-    function calculateZoom(isZoomingIn) {
-        var scaleFactor = isZoomingIn ? 1.2 : 1 / 1.2; // Factor by which the image is zoomed in or out
-        var newScale = isZoomingIn ? zoomScale * scaleFactor : 1; // Calculate new scale or reset to original
-
-        // Constrain zoom to not exceed the size of the div container
-        var rect = divContainer.getBoundingClientRect();
-        var imageRect = imageToZoom.getBoundingClientRect();
-        if (imageRect.width * scaleFactor > rect.width || imageRect.height * scaleFactor > rect.height) {
-            if (isZoomingIn) {
-                newScale = Math.min(newScale, maxZoomScale); // Constrain to max zoom scale
-            } else {
-                newScale = 1; // Reset to original scale
-            }
-        }
-
-        applyZoom(newScale);
-    }
-
-    // Add event listener for the zoom button
-    zoomButton.addEventListener('click', function() {
-        calculateZoom(true); // Zoom in
-    });
-
-    // Add event listener for the image to zoom out
-    imageToZoom.addEventListener('click', function () {
-        calculateZoom(false); // Zoom out
-    });
-
-    // Konva stage event handling for adding boxes and points
     stage.on('click', function (e) {
         if (addingPoints && currentGroup && e.target === currentGroup.children[0]) {
             var box = currentGroup.children[0];
@@ -206,14 +148,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // Attach the transformer to the clicked point
             attachTransformerToPoint(e.target);
         }
-
-        if (e.target === stage || e.target.getParent().className === 'Layer') {
-            // Stop event propagation if interacting with the Konva stage
-            e.cancelBubble = true;
-        }
     });
 
-    // Box and point button event listeners
     boxButton.addEventListener('click', function() {
         var elements = createBox();
         currentGroup = elements.group;
@@ -222,10 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     pointButton.addEventListener('click', function() {
         addingPoints = !addingPoints;
-        stage.container().style.cursor = addingPoints ? 'crosshair' : 'default'; // Change cursor on POINT button click
     });
-
-    // Keydown event for deletion
     window.addEventListener('keydown', function(e) {
         if (e.key === 'Delete') {
             // Check if the point transformer has a selected node
@@ -255,7 +188,67 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     });
+    
 
-    // Create the initial point transformer
     createPointTransformer();
+});
+
+// HERE FOR ZOOM
+
+document.addEventListener('DOMContentLoaded', function () {
+    var zoomButton = document.getElementById('zoom-button'); // The button to zoom in
+    var imageToZoom = document.getElementById('image-to-zoom'); // The image to be zoomed
+    var divContainer = document.getElementById('raw-cxray-div'); // The div container of the image
+    var zoomScale = 1; // Current zoom level
+    var maxZoomScale = 2; // Set a reasonable max zoom scale; you can adjust this as needed
+
+    // Function to apply or reset zoom on the image
+    function applyZoom(newScale) {
+        // Update the zoom scale
+        zoomScale = newScale;
+    
+        // Apply the transformation to the image
+        imageToZoom.style.transform = `scale(${zoomScale})`;
+        // Adjust the transform origin to ensure the image scales from the top-left corner
+        imageToZoom.style.transformOrigin = 'top left';
+    
+        // Make sure the divContainer has overflow hidden to prevent the image from spilling out
+        divContainer.style.overflow = 'auto';
+    
+        // Update the container's scrollable size based on the zoomScale
+        divContainer.scrollWidth = imageToZoom.clientWidth * zoomScale;
+        divContainer.scrollHeight = imageToZoom.clientHeight * zoomScale;
+    }
+
+    // Function to calculate and constrain the new zoom scale
+    function calculateZoom(isZoomingIn) {
+        var scaleFactor = isZoomingIn ? 1.2 : 1 / 1.2; // Factor by which the image is zoomed in or out
+        var newScale = isZoomingIn ? zoomScale * scaleFactor : 1; // Calculate new scale or reset to original
+
+        // Constrain zoom to not exceed the size of the div container
+        var rect = divContainer.getBoundingClientRect();
+        var imageRect = imageToZoom.getBoundingClientRect();
+        if (imageRect.width * scaleFactor > rect.width || imageRect.height * scaleFactor > rect.height) {
+            if (isZoomingIn) {
+                newScale = Math.min(newScale, maxZoomScale); // Constrain to max zoom scale
+            } else {
+                newScale = 1; // Reset to original scale
+            }
+        }
+
+        applyZoom(newScale);
+    }
+
+    // Event listener for the zoom button to zoom in
+    zoomButton.addEventListener('click', function() {
+        calculateZoom(true); // Zoom in
+    });
+
+    // Event listener for the image to zoom out on click
+    imageToZoom.addEventListener('click', function () {
+        calculateZoom(false); // Zoom out (reset)
+    });
+
+    // ... Your existing Konva.js setup and functionality ...
+
 });
