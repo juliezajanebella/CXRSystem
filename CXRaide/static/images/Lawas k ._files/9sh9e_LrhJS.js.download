@@ -1,0 +1,3 @@
+;/*FB_PKG_DELIM*/
+
+__d("LSAppendDataTraceAddonImpl",[],(function(a,b,c,d,e,f){function a(){var a=arguments,b=a[a.length-1];b.n;var c=[],d=[];return b.seq([function(d){return c[0]=b.i64.of_float(Date.now()),b.db.table(154).add({addonId:void 0,traceId:a[0],timestampMs:c[0],checkPointId:a[1],syncChannel:a[2],errorMessage:a[3],tags:a[4]})},function(a){return b.resolve(d)}])}b=a;f["default"]=b}),66);
