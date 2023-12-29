@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../static/css/login.css">
+    <link rel="stylesheet" href="../static/css/createAcc.css">
     <title>CXRaide</title>
 </head>
 <body>
@@ -21,7 +21,7 @@
             <div class="col-md-6 right-box" id="field-box">
                 <div class="row align-items-center">
                     <div class="header-text mb-4">
-                            <h2>Welcome, Doctor</h2>
+                            <h2>Create Account Here</h2>
                             <p>Let's go and annotate now.</p>
                     </div>
                     <form method="POST" enctype="multipart/form-data">
@@ -30,26 +30,26 @@
                             <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="Username" name="username" required>
                         </div>
                         <div class="input-group mb-1">
-                            <input type="password" class="form-control form-control-lg bg-light fs-6" placeholder="Password"  name="password">
-                        </div>
-                        <div class="input-group mb-5 d-flex justify-content-between">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="formCheck">
-                                <label for="formCheck" class="form-check-label text-secondary"><small>Remember Me</small></label>
-                            </div>
-                            <div class="forgot">
-                                <small><a href="#">Forgot Password?</a></small>
-                            </div>
+                            <input type="password" class="form-control form-control-lg bg-light fs-6" placeholder="First Name"  name="firstname">
                         </div>
                         <div class="input-group mb-3">
-                            <button class="btn btn-lg btn-primary w-100 fs-6" id="login-btn" href=>Login</button>
+                            <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="Last Name" name="lastname" required>
+                        </div>
+                        <div class="input-group mb-1">
+                            <input type="password" class="form-control form-control-lg bg-light fs-6" placeholder="Password"  name="password">
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="Confirm Password" name="confirm_password" required>
+                        </div>
+                        <div class="input-group mb-1">
+                            <input type="password" class="form-control form-control-lg bg-light fs-6" placeholder="Email"  name="email">
                         </div>
                     </form>
                     <div class="input-group mb-3">
-                        <button class="btn btn-lg btn-light w-100 fs-6"><img src="../static/images/google.png" style="width:20px" class="me-2"><small>Sign In with Google</small></button>
+                        <a href="{% url 'login' %}">
+                            <button class="btn btn-lg btn-primary w-100 fs-6" id="login-btn">Login</button>
+                        </a>    
                     </div>
-                    <div class="row">
-                        <small>Don't have account? <a href="{% url 'create-acc' %}">Sign Up</a></small>
                     </div>
                 </div>
             </div> 

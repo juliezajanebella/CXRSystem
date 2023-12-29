@@ -10,9 +10,27 @@ from django.contrib.auth.models import User
 from .models import Radiologist, RawXray
 from CXRaide.functions import handle_uploaded_file
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.hashers import make_password
 
 
 # main functions
+def create_acc(request):
+    if request.method == 'POST':
+    # input from user
+        username = request.POST.get('username')    
+        firstname = request.POST.get('firstname')
+        lastname = request.POST.get('lastname')          
+        password = request.POST.get('password')
+        confirm_pass = request.POST.get('confirm_password') 
+
+        # hash password
+        hashed_password = make_password(password)
+
+        # data from database
+        radiologist = Radiologist(radiologist_username=username, radiologist_firstname=firstname, radiologist_lastname=lastname, radiologist_password=confirm_pass)
+        radiologist.save()
+    return render(request, 'createAcc.html')
+
 def user_login(request): 
     if request.method == 'POST':
         # input from user
