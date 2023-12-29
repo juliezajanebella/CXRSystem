@@ -64,14 +64,21 @@
             <div class="col-sm-8 text-left"> 
                 {% include 'CXRaide/includes/message.html' %} 
                 <div class="text-container">
-                    <h1>WELCOME! Doctor</h1>
+                    <h1>Welcome, Doctor!</h1>
+                    <h4>Let's now annotate</h4>
                     <hr>
                     <form action="" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
-                        Image Caption: <input type="text" name="raw_cxray_name" value="{{ raw_cxray_name }}" placeholder="Enter Here" required>
-                        <br><br><input type="file" name="raw_cxray" value="{{ raw_cxray }}" required>
+                        <!-- NEW UPDATE -->
+                        <div class="upload-container">
+                            <input type="file" name="raw_cxray" value="{{ raw_cxray }}" required>
+                            <button class="load-button">Load Image</button> 
+                        </div>
+                        <!-- ================================================================== -->
+                        <!-- Image Caption: <input type="text" name="raw_cxray_name" value="{{ raw_cxray_name }}" placeholder="Enter Here" required> -->
+                        <!-- <br><br><input type="file" name="raw_cxray" value="{{ raw_cxray }}" required>
                         <hr>
-                        <br><button>Load Image</button>    
+                        <br><button>Load Image</button>     -->
                     </form>  
                 </div>
             </div>

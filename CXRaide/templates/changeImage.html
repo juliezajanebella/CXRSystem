@@ -6,9 +6,12 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <title>CXRaide - Generate</title>
-  <link rel="stylesheet" href="../static/css/generateCXR.css">
+  <!-- UPDATE PAGE -->
+  <title>CXRaide - Change Image</title> 
+  <link rel="stylesheet" href="../static/css/home.css">
 </head>
+
+{% load static %}
 <body>
     <!-- NAVBAR -->
     <nav class="navbar navbar-inverse">
@@ -35,7 +38,7 @@
         </div>
     </nav>
     <!-- BODY -->
-    <div class="container-fluid text-center">    
+    <div class="container-fluid text-center">   
         <div class="row content">
             <div class="col-sm-2 sidenav" id="tools-container">
                 <div class="well">
@@ -58,24 +61,25 @@
                     <img src="../static/images/undo-redo-icon.png" alt="" id="move-icon">
                     <p class="undo-redo-button">UNDO and REDO</p>
                 </div>
-            </div>
+            </div>  
             <div class="col-sm-8 text-left"> 
+                {% include 'CXRaide/includes/message.html' %} 
                 <div class="text-container">
-                    <h1>CXR Image</h1>
+                    <h1>Change Image</h1>
                     <hr>
-                    <!-- display image -->
-                    <div class="cxr-image"> 
-                        <p>Raw CXRay Name: {{ raw_cxray_name }}</p>
-                        <img src="../static/upload/{{raw_cxray}}" alt={{ raw_cxray }} height="50%" width="50%">
-                    </div>
-                    <hr>
-                    <div class="buttons" id="update-cxr">
-                        <a href="{% url 'update' %}"><br><button>Update</button></a>
-                    </div>
-                    <div class="buttons" id="generate-cxr">
-                        <a href="{% url 'annotation-edit' %}">
-                        <br><button>Generate</button></a>
-                    </div>
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        <!-- NEW UPDATE -->
+                        <div class="upload-container">
+                            <input type="file" name="raw_cxray" value="{{ raw_cxray }}" required>
+                            <button class="load-button">Load Image</button> 
+                        </div>
+                        {% csrf_token %}
+                        <!-- Current Image Name: <input type="text" name="prev_raw_cxray_name" placeholder="Enter Current Image" required>
+                        <br><br>New Image Name: <input type="text" name="raw_cxray_name" placeholder="Enter Here" required>
+                        <br><br><input type="file" name="raw_cxray" required>
+                        <hr>
+                        <br><button>Load Image</button>     -->
+                    </form>  
                 </div>
             </div>
             <div class="col-sm-2 sidenav">

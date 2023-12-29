@@ -12,7 +12,7 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('about/', views.about, name='about'),
     path('contact/', views.contact, name='contact'),
-    path('update/', views.update, name='update'),
+    path('change_image/', views.change_image, name='change-image'),
     path('annotation-edit/', views.annotation_edit, name='annotation-edit'),
     path('download/', views.download, name='download'),
 ]

@@ -30,31 +30,31 @@
                             <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="Username" name="username" required>
                         </div>
                         <div class="input-group mb-1">
-                            <input type="password" class="form-control form-control-lg bg-light fs-6" placeholder="First Name"  name="firstname">
+                            <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="First Name"  name="firstname" required>
                         </div>
                         <div class="input-group mb-3">
                             <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="Last Name" name="lastname" required>
                         </div>
                         <div class="input-group mb-1">
-                            <input type="password" class="form-control form-control-lg bg-light fs-6" placeholder="Password"  name="password">
+                            <input type="password" class="form-control form-control-lg bg-light fs-6" placeholder="Password"  name="password" required>
                         </div>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control form-control-lg bg-light fs-6" placeholder="Confirm Password" name="confirm_password" required>
+                            <input type="password" class="form-control form-control-lg bg-light fs-6" placeholder="Confirm Password" name="confirm_password" required>
                         </div>
                         <div class="input-group mb-1">
-                            <input type="password" class="form-control form-control-lg bg-light fs-6" placeholder="Email"  name="email">
+                            <input type="email" class="form-control form-control-lg bg-light fs-6" placeholder="Email"  name="email" required>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <button class="btn btn-lg btn-primary w-100 fs-6" id="login-btn" href=>Create Account</button>
                         </div>
                     </form>
-                    <div class="input-group mb-3">
-                        <a href="{% url 'login' %}">
-                            <button class="btn btn-lg btn-primary w-100 fs-6" id="login-btn">Login</button>
-                        </a>    
-                    </div>
+                    <div class="row">
+                        <small>Have an account now? <a href="{% url 'login' %}">Login</a></small>
                     </div>
                 </div>
             </div> 
-
-            </div>
         </div>
+    </div>
 </body>
 </html>
