@@ -14,6 +14,17 @@ document.addEventListener('DOMContentLoaded', function () {
     var layer = new Konva.Layer();
     stage.add(layer);
 
+    // global transformer setup
+    var globalBoxTransformer = new Konva.Transformer({
+        rotateEnabled: false,
+        flipEnabled: false,
+        anchorSize: 8,
+        borderDash: [3, 3],
+        keepRatio: false,
+        centeredScaling: true
+    });
+    layer.add(globalBoxTransformer);
+
 
     // stage variables
     var addingPoints = false;
@@ -75,14 +86,19 @@ document.addEventListener('DOMContentLoaded', function () {
         pointTransformer.visible(true);
         layer.draw();
     }
+    function attachTransformerToBox(box) {
+        globalBoxTransformer.nodes([box]);
+        globalBoxTransformer.moveToTop();
+        layer.draw();
+    }
 
 
     // main functionality
     function createBox() {
         var group = new Konva.Group({ draggable: true });
         var box = new Konva.Rect({
-            x: 0, 
-            y: 0, 
+            x: 175, 
+            y: 100, 
             width: 100, 
             height: 100,
             fill: 'rgba(0,0,0,0.5)', 
@@ -102,8 +118,8 @@ document.addEventListener('DOMContentLoaded', function () {
             listening: false // ignore mouse events
         });
         var label = new Konva.Text({ // create a label above the box
-            x: 0,
-            y: -20,
+            x: 175,
+            y: 80,
             text: "",
             fontSize: 14,
             fontFamily: 'Calibri',
@@ -139,9 +155,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         box.on('click', function () {
             currentGroup = group;
-            currentTransformer = transformer;
-            transformer.nodes([box]);
-            layer.draw();
+            currentBox = box; // Track the currently selected box
+            attachTransformerToBox(box);
         });
         transformer.on('transform', function () { // add transformer listeners to update label position on box resize
             // adjust label position and text background size
@@ -165,6 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var elements = createBox();
         currentGroup = elements.group;
         currentTransformer = elements.transformer;
+        currentTransformer.detach();
         abnormalitiesDropdown.selectedIndex = 0; // Reset the dropdown
         
         // Reset the label text of the newly created box (if needed)
@@ -225,6 +241,12 @@ document.addEventListener('DOMContentLoaded', function () {
             layer.draw();
         } else if (e.target.getClassName() === 'Circle') {
             handlePointClick(e.target);
+
+            // Stop event propagation to prevent selecting the box
+            e.cancelBubble = true;
+
+            // Attach the transformer to the clicked point
+            attachTransformerToPoint(e.target);
         } else if (e.target === stage) {
             if (currentTransformer) {
                 currentTransformer.nodes([]);
@@ -235,13 +257,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 layer.draw();
             }
         } 
-        
-        if (e.target.getClassName() === 'Circle') {
-            // Stop event propagation to prevent selecting the box
-            e.cancelBubble = true;
-            
-            // Attach the transformer to the clicked point
-            attachTransformerToPoint(e.target);
+
+        // Detach transformer when clicking outside of any boxes
+        if (e.target === stage) {
+            globalBoxTransformer.nodes([]);
+            layer.draw();
         }
     });
     window.addEventListener('keydown', function(e) {
@@ -255,22 +275,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 pointTransformer.nodes([]);
                 pointTransformer.visible(false);
                 layer.draw();
-            } else if (currentTransformer && currentTransformer.nodes().length > 0) {
-                // Delete the selected box and its associated points
-                var nodes = currentTransformer.nodes();
-                nodes.forEach(function(node) {
-                    if (node.points) {
-                        node.points.forEach(function(point) {
-                            point.destroy();
-                        });
-                    }
-                    node.getParent().destroy(); // node.parent.destroy() will destroy the group, which includes the box, label, and background
-                    node.destroy();
+            } else if (globalBoxTransformer.nodes().length > 0) {
+                var nodesToDelete = globalBoxTransformer.nodes();
+                globalBoxTransformer.nodes([]); // Clear the nodes from the transformer
+    
+                // Destroy each node and its parent group (assuming each node is a box)
+                nodesToDelete.forEach(function(node) {
+                    node.getParent().destroy();
                 });
-                currentTransformer.detach();
-                currentTransformer.destroy();
-                currentTransformer = null;
-                currentGroup = null;
+    
                 layer.draw();
             }
         }
