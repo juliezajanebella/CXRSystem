@@ -1,49 +1,37 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // element references
     var boxButton = document.getElementById('box-button');
     var pointButton = document.getElementById('point-button');
+    var abnormalitiesDropdown = document.getElementById('abnormalities');
+
+
+    // konva stage and layer setup
     var stage = new Konva.Stage({
         container: 'box-container',
         width: 415.99,
         height: 380,
     });
-
     var layer = new Konva.Layer();
     stage.add(layer);
 
+
+    // stage variables
     var addingPoints = false;
     var currentGroup;
     var currentTransformer;
     var pointTransformer;
 
-    function createBox() {
-        var group = new Konva.Group({ draggable: true });
-        var box = new Konva.Rect({
-            x: 0, y: 0, width: 100, height: 100,
-            fill: 'rgba(0,0,0,0.5)', stroke: 'black', strokeWidth: 1
-        });
 
-        group.add(box);
-        layer.add(group);
-
-        var transformer = new Konva.Transformer({
-            nodes: [box], rotateEnabled: false, anchorSize: 8,
-            borderDash: [3, 3], keepRatio: false, centeredScaling: true
-        });
-
-        layer.add(transformer);
-
-        box.points = []
-
-        box.on('click', function () {
-            currentGroup = group;
-            currentTransformer = transformer;
-            transformer.nodes([box]);
-            layer.draw();
-        });
-
-        return { group, box, transformer };
+    // utility functions
+    function updateTextBackground(label, background) {
+        // Adjust the size and position to match the label
+        background.width(label.width() + 20); // Padding of 10 on each side
+        background.height(label.height() + 5); // Padding of 5 on top and bottom
+        background.x(label.x() - 10);
+        background.y(label.y() - 4);
+        background.visible(true); // Ensure background is visible
+        layer.batchDraw();
     }
-
     function createPointTransformer() {
         pointTransformer = new Konva.Transformer({
             enabledAnchors: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
@@ -56,16 +44,13 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         layer.add(pointTransformer);
     }
-
-    // Function to create and handle the transformer for points
-    function attachTransformerToPoint(point) {
-    // Ensure the existing transformer is detached
+    function attachTransformerToPoint(point) {  // create and handle the transformer for points
+        // ensure the existing transformer is detached
         if (currentTransformer) {
             currentTransformer.detach();
             layer.draw();
         }
-
-        // Check if pointTransformer is already created or not
+        // check if pointTransformer is already created or not
         if (!pointTransformer) {
             pointTransformer = new Konva.Transformer({
                 rotateEnabled: false,
@@ -79,20 +64,130 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         layer.add(pointTransformer);
         }
-    
-        // Attach the transformer to the point
+        // attach the transformer to the point
         pointTransformer.nodes([point]);
         pointTransformer.visible(true);
         pointTransformer.moveToTop(); // Ensure the transformer is on top of other elements
         layer.draw();
     }
-
     function handlePointClick(point) {
         pointTransformer.nodes([point]);
         pointTransformer.visible(true);
         layer.draw();
     }
 
+
+    // main functionality
+    function createBox() {
+        var group = new Konva.Group({ draggable: true });
+        var box = new Konva.Rect({
+            x: 0, 
+            y: 0, 
+            width: 100, 
+            height: 100,
+            fill: 'rgba(0,0,0,0.5)', 
+            stroke: 'black', 
+            strokeWidth: 1,
+            name:'box'
+        });
+        group.add(box);
+        layer.add(group);
+        
+        var textBackground = new Konva.Rect({ // create a transparent background for the label
+            x: 0,
+            y: -20,
+            fill: 'white',
+            opacity: 0.5,
+            visible: false, // make it visible by default
+            listening: false // ignore mouse events
+        });
+        var label = new Konva.Text({ // create a label above the box
+            x: 0,
+            y: -20,
+            text: "",
+            fontSize: 14,
+            fontFamily: 'Calibri',
+            fill: 'black',
+            listening: false // ignore mouse events
+        });
+
+        // update the background size based on the label size
+        textBackground.width(label.width() + 20); // Padding of 10 on each side
+        textBackground.height(label.height() + 5); // Padding of 5 on top and bottom
+        group.add(box);
+
+        // initial update for the text background size
+        updateTextBackground(label, textBackground);
+        label.text(abnormalitiesDropdown.options[abnormalitiesDropdown.selectedIndex].text);
+        updateTextBackground(label, textBackground);
+
+        var transformer = new Konva.Transformer({
+            nodes: [box],
+            rotateEnabled: false, // disable rotation
+            flipEnabled: false, // diable flipping
+            anchorSize: 8,
+            borderDash: [3, 3], 
+            keepRatio: false, 
+            centeredScaling: true
+        });
+
+        layer.add(transformer);
+        group.add(textBackground);
+        group.add(label);
+
+        box.points = []
+
+        box.on('click', function () {
+            currentGroup = group;
+            currentTransformer = transformer;
+            transformer.nodes([box]);
+            layer.draw();
+        });
+        transformer.on('transform', function () { // add transformer listeners to update label position on box resize
+            // adjust label position and text background size
+            label.x(box.x() - 10);
+            label.y(box.y() - 20);
+            textBackground.x(label.x() - 10);
+            textBackground.y(label.y() - 5);
+            textBackground.width(label.width() + 20);
+            textBackground.height(label.height() + 5);
+            layer.batchDraw();
+        });
+        group.on('dragend transformend', function() {
+            updateTextBackground(label, textBackground);
+        });
+
+        return { group, box, transformer, label, textBackground};
+    }
+    
+    // event listeners
+    boxButton.addEventListener('click', function() {
+        var elements = createBox();
+        currentGroup = elements.group;
+        currentTransformer = elements.transformer;
+        abnormalitiesDropdown.selectedIndex = 0; // Reset the dropdown
+        
+        // Reset the label text of the newly created box (if needed)
+        elements.label.text("Abnormality:"); // Replace "Default Text" with whatever default you want
+        updateTextBackground(elements.label, elements.textBackground); // Update the background size for new label text
+        layer.draw();
+    });
+    pointButton.addEventListener('click', function() {
+        addingPoints = !addingPoints;
+        stage.container().style.cursor = addingPoints ? 'crosshair' : 'default'; // Change cursor on POINT button click
+    });
+    abnormalitiesDropdown.addEventListener('change', function() {
+        if (currentGroup) {
+            var label = currentGroup.children.find(child => child.className === 'Text');
+            if (label) {
+                label.text(this.options[this.selectedIndex].text);
+                layer.draw();
+            }
+        }
+    });
+
+
+    // logic handle stage on click
     stage.on('click', function (e) {
         if (addingPoints && currentGroup && e.target === currentGroup.children[0]) {
             var box = currentGroup.children[0];
@@ -149,18 +244,6 @@ document.addEventListener('DOMContentLoaded', function () {
             attachTransformerToPoint(e.target);
         }
     });
-
-    boxButton.addEventListener('click', function() {
-        var elements = createBox();
-        currentGroup = elements.group;
-        currentTransformer = elements.transformer;
-    });
-
-    pointButton.addEventListener('click', function() {
-        addingPoints = !addingPoints;
-        stage.container().style.cursor = addingPoints ? 'crosshair' : 'default'; // Change cursor on POINT button click
-    });
-    
     window.addEventListener('keydown', function(e) {
         if (e.key === 'Delete') {
             // Check if the point transformer has a selected node
@@ -181,17 +264,17 @@ document.addEventListener('DOMContentLoaded', function () {
                             point.destroy();
                         });
                     }
+                    node.getParent().destroy(); // node.parent.destroy() will destroy the group, which includes the box, label, and background
                     node.destroy();
                 });
                 currentTransformer.detach();
                 currentTransformer.destroy();
                 currentTransformer = null;
+                currentGroup = null;
                 layer.draw();
             }
         }
     });
-    
-
     createPointTransformer();
 });
 
@@ -258,21 +341,22 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // HERE FOR SAVING - not working check daw dri kiy hehe
-document.addEventListener('DOMContentLoaded', function () {
-    var saveButton = document.getElementById('save-button')
+// document.addEventListener('DOMContentLoaded', function () {
+//     var saveButton = document.getElementById('save-button')
 
-    saveButton.addEventListener('click', function() {
-        var dataURL = stage.toDataURL({ pixelRatio: 3 });
-        downloadURL(dataURL, 'stage.png');
-    },false);
+//     saveButton.addEventListener('click', function() {
+//         var dataURL = stage.toDataURL({ pixelRatio: 3 });
+//         downloadURL(dataURL, 'stage.png');
+//     },false);
 
-    function downloadURL(url, name) {
-        var link = document.createElement('a');
-        link.download = name;
-        link.href = url;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        delete link;
-    }
-});
+//     function downloadURL(url, name) {
+//         var link = document.createElement('a');
+//         link.download = name;
+//         link.href = url;
+//         document.body.appendChild(link);
+//         link.click();
+//         document.body.removeChild(link);
+//         delete link;
+//     }
+// });
+
