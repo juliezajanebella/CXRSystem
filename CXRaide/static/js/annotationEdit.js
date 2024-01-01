@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var zoomInButton = document.getElementById('zoom-in-button'); // Assuming you have this button in your HTML
     var zoomOutButton = document.getElementById('zoom-out-button'); // Assuming you have this button in your HTML
     var imageToZoom = document.getElementById('image-to-zoom');
-    var divContainer = document.getElementById('raw-cxray-image-div');
+    var divContainer = document.getElementById('raw_cxray_image_div');
     var zoomScale = 1;
     var maxZoomScale = 5;
     var minZoomScale = 1; // Minimum zoom scale, usually 1 for original size
@@ -255,4 +255,24 @@ document.addEventListener('DOMContentLoaded', function () {
             imageToZoom.style.top = (imgRect.top + deltaY) + 'px';
         }
     });
+});
+
+// HERE FOR SAVING - not working
+document.addEventListener('DOMContentLoaded', function () {
+    var saveButton = document.getElementById('save-button')
+
+    saveButton.addEventListener('click', function() {
+        var dataURL = stage.toDataURL({ pixelRatio: 3 });
+        downloadURL(dataURL, 'stage.png');
+    },false);
+
+    function downloadURL(url, name) {
+        var link = document.createElement('a');
+        link.download = name;
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        delete link;
+    }
 });

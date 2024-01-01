@@ -1,14 +1,6 @@
 from django.db import models
 
 # Create your models here
-class RawXray(models.Model): # for raw xray images
-    raw_cxray_id = models.AutoField(primary_key=True, verbose_name='Raw CXray Image ID')
-    raw_cxray_filename = models.CharField(max_length=100, verbose_name='Raw CXRay File Name')
-    raw_cxray = models.FileField(upload_to="", verbose_name='Raw CXray Image')
-    
-    def __str__(self):
-        return self.raw_cxray_id
-
 class Radiologist(models.Model): # details of user (radiologists)
     radiologist_id = models.AutoField(primary_key=True, verbose_name='Radiologist ID')
     radiologist_username = models.CharField(max_length=100, verbose_name='Username')
@@ -19,6 +11,22 @@ class Radiologist(models.Model): # details of user (radiologists)
 
     def __str__(self):
         return self.radiologist_id + ' | ' + self.radiologist_username
+
+class RawXray(models.Model): # for raw xray images
+    raw_cxray_id = models.AutoField(primary_key=True, verbose_name='Raw CXray Image ID')
+    raw_cxray_filename = models.CharField(max_length=100, verbose_name='Raw CXRay File Name')
+    raw_cxray = models.FileField(upload_to="", verbose_name='Raw CXray Image')
+    
+    def __str__(self):
+        return self.raw_cxray_filename
+
+class AnnotatedImage(models.Model):
+    annotated_cxray_id = models.AutoField(primary_key=True, verbose_name='Annotated CXray Image ID')
+    annotated_cxray_filename = models.CharField(max_length=100, verbose_name='Annotated CXRay File Name')
+    annotated_cxray = models.ImageField(upload_to='annotated_images/', verbose_name='Annotated CXray Image')
+
+    def __str__(self):
+        return self.annotated_cxray_filename
 
     
 

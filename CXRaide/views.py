@@ -3,15 +3,23 @@
 # Request -> Response
 # Action
 
+import json
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages                           # alert messages
 from django.contrib.auth.models import User
-from .models import Radiologist, RawXray
+from .models import Radiologist, RawXray, AnnotatedImage
 from CXRaide.functions import handle_uploaded_file
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password, check_password
 import os
+import base64
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from django.core.files.base import ContentFile
+import uuid
+from django.utils import timezone
 
 # main functions
 def create_acc(request):
@@ -104,19 +112,47 @@ def annotation_edit(request):
     raw_xray_obj = RawXray.objects.last()
 
     if raw_xray_obj:
-        raw_cxray_name = raw_xray_obj.raw_cxray_name
+        raw_cxray_filename = raw_xray_obj.raw_cxray_filename
         raw_cxray = raw_xray_obj.raw_cxray
 
         # Use raw_cxray_name and raw_cxray in your logic or pass to context for rendering
-        context = {'raw_cxray_name': raw_cxray_name, 'raw_cxray': raw_cxray}
+        context = {'raw_cxray_filename': raw_cxray_filename, 'raw_cxray': raw_cxray}
         return render(request, 'annotationEdit.html', context)
     else:
         # Handle case when RawXray object is not found
         pass
 
 def download(request):
-    
-    return render(request, 'download.html')
+    # Retrieve the latest annotated image
+    annotated_image = AnnotatedImage.objects.order_by('-annotated_cxray_id').first()  # Assuming 'id' is your primary key field
+    context = {'annotated_image': annotated_image}
+    return render(request, 'download.html', context)
+
+@csrf_exempt
+def save_image(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            image_data = data['annotated_cxray_id']
+            format, imgstr = image_data.split(';base64,')
+            ext = format.split('/')[-1]
+
+            # Create a unique file name using UUID and timestamp
+            unique_filename = 'annotated_image_{}_{}.{}'.format(uuid.uuid4(), timezone.now().strftime("%Y%m%d%H%M%S"), ext)
+
+            # Convert base64 image to ContentFile
+            image_file = ContentFile(base64.b64decode(imgstr), name=unique_filename)
+            
+            # Save the image to the ImageField
+            annotated_image = AnnotatedImage()
+            annotated_image.image.save(unique_filename, image_file, save=True)
+
+            return JsonResponse({'message': 'Image saved successfully!'})
+        except Exception as e:
+            # Log the error here
+            return JsonResponse({'error': 'Failed to save image', 'details': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid HTTP method'}, status=400)
 
 
  
