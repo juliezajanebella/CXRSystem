@@ -7,8 +7,8 @@ document.addEventListener("DOMContentLoaded", function () {
   var abnormalitiesDropdown = document.getElementById("abnormalities");
 
   // konva stage and layer setup
-  var stageWidth = 400;
-  var stageHeight = 400;
+  var stageWidth = 512;
+  var stageHeight = 512;
 
   stage = new Konva.Stage({
     container: "box-container",
@@ -395,8 +395,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // HERE FOR SAVING
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("DOMContentLoaded event fired");
-
   function downloadURL(url, name) {
     var link = document.createElement("a");
     link.download = name;
@@ -412,9 +410,8 @@ document.addEventListener("DOMContentLoaded", function () {
   saveButton.addEventListener(
     "click",
     function () {
-      console.log("test");
-      var dataURL = stage.toDataURL({ pixelRatio: 3 });
-      downloadURL(dataURL, "CXRaide-AnnotatedImage.png");
+      var dataURL = stage.toDataURL({ pixelRatio: 1 });
+      downloadURL(dataURL, "stage.png");
 
       //redirect to /download after 3 seconds
       setTimeout(function () {
@@ -423,4 +420,73 @@ document.addEventListener("DOMContentLoaded", function () {
     },
     false
   );
+});
+
+// HERE FOR AI ANNOTATION
+
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("DOMContentLoaded event fired");
+  var aiGeneratedBoxContainer = document.getElementById(
+    "ai-generated-box-container"
+  );
+
+  var file = rawCxrayURL;
+  if (file) {
+    var img = new Image();
+    img.src = file;
+
+    var formData = new FormData();
+
+    img.onload = function () {
+      // Create a canvas to draw the image
+      var canvas = document.createElement("canvas");
+      var ctx = canvas.getContext("2d");
+
+      // Set the canvas dimensions to match the image
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      // Draw the image onto the canvas
+      ctx.drawImage(img, 0, 0);
+
+      // Get the image data from the canvas as a data URL
+      var imageDataURL = canvas.toDataURL("image/png");
+
+      // Convert the data URL to a Blob
+      fetch(imageDataURL)
+        .then((res) => res.blob())
+        .then((blob) => {
+          // Append the Blob to FormData with the correct key
+          formData.append("image", blob, "image.png");
+
+          // Log or use formData here
+          console.log(formData);
+
+          // Make the fetch request with formData
+          // Assuming formData is your form data with the image file
+
+          fetch("/ai_annotation/", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.blob()) // assuming the response is a binary blob
+            .then((blob) => {
+              // Create a new image object
+              const img = new Image();
+
+              // Set the source of the image to the blob data
+              img.src = URL.createObjectURL(blob);
+
+              // Set the id attribute for the image
+              img.id = "annotated-image";
+
+              // Append the image to the "ai-generated-box-container" div
+              document
+                .getElementById("ai-generated-box-container")
+                .appendChild(img);
+            })
+            .catch((error) => console.error("Error:", error));
+        });
+    };
+  }
 });

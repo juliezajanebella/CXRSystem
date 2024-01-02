@@ -1,48 +1,98 @@
 .navbar {
-    margin-bottom: 0;
-    border-radius: 0;
-    border-color: #F31559;
-  }
-  #navbar-container{
-    background-color: #F31559;
-  
-  }
-  .navbar-header > .navbar-brand{
-    color:whitesmoke ;
-    font-weight: bolder;
-    font-family: Arial, Helvetica, sans-serif;
-  }
-  .navbar-inverse .navbar-nav>li>a{
-    color:whitesmoke ;
-  }
-  .navbar-inverse .navbar-nav>li>a:hover{
-    color:black ;
-    font-weight: bolder;
-  }
-  .navbar-inverse .navbar-nav>.active>a{
-    color: black;
-    background-color: #FFCCCC;
-    font-weight: bolder;
-  }
-  
-  
-  .row.content {
-    height: 597px
-  }
+  margin-bottom: 0;
+  border-radius: 0;
+  border-color: #F31559;
+}
+#navbar-container{
+  background-color: #F31559;
+
+}
+.navbar-header > .navbar-brand{
+  color:whitesmoke ;
+  font-weight: bolder;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.navbar-inverse .navbar-nav>li>a{
+  color:whitesmoke ;
+}
+.navbar-inverse .navbar-nav>li>a:hover{
+  color:black ;
+  font-weight: bolder;
+}
+.navbar-inverse .navbar-nav>.active>a{
+  color: black;
+  background-color: #FFCCCC;
+  font-weight: bolder;
+}
+
+
+.row.content {
+  height: 597px
+}
+.sidenav {
+  padding-top: 20px;
+  background-color: #f1f1f1;
+  height: 100%;
+}
+
+/* On small screens, set height to 'auto' for sidenav and grid */
+@media screen and (max-width: 767px) {
   .sidenav {
-    padding-top: 20px;
-    background-color: #f1f1f1;
-    height: 100%;
+    height: auto;
+    padding: 15px;
   }
+  .row.content {
+    height:auto;
+  } 
+}
   
-  /* On small screens, set height to 'auto' for sidenav and grid */
-  @media screen and (max-width: 767px) {
-    .sidenav {
-      height: auto;
-      padding: 15px;
-    }
-    .row.content {
-      height:auto;
-    } 
-  }
-  
+/* UPDATE INTERFACE */
+.buttons {
+  display: flex;
+  justify-content: center; /* Center buttons horizontally */
+  gap: 10px; /* Space between buttons */
+  margin-top: 35px; /* Space above the buttons */
+}
+
+.buttons button {
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 16px; /* Bigger text on buttons */
+}
+
+/* Specific styles for buttons */
+.download-button {
+  background-color: #F31559; /* LimeGreen color */
+}
+
+.download-button:hover {
+  background-color: #2e8b57; /* Darker LimeGreen on hover */
+  color: black;
+}
+.ai-button {
+  background-color: #F31559; /* LimeGreen color */
+}
+
+.ai-button:hover {
+  background-color: #2e8b57; /* Darker LimeGreen on hover */
+  color: black;
+}
+
+/* UPDATE FOR ABNORMALITIES MARKDOWN */
+select {
+  width: 100%;
+  padding: 9px;
+  border: none;
+  box-shadow: none;
+  background: white;
+  border-radius: 4px;
+}
+
+/* center the raw image */
+#box-container{
+  margin-left: 40px
+}

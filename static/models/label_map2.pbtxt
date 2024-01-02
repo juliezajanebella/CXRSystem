@@ -1,0 +1,46 @@
+item {
+  id: 1
+  name: "Cardiomegaly"
+}
+
+item {
+  id: 2
+  name: "Pleural thickening"
+}
+
+item {
+  id: 3
+  name: "Pulmonary fibrosis"
+}
+
+item {
+  id: 4
+  name: "Pleural effusion"
+}
+
+item {
+  id: 5
+  name: "Nodule/Mass"
+}
+
+item {
+  id: 6
+  name: "Infiltration"
+}
+
+item {
+  id: 7
+  name: "Atelectasis"
+}
+
+item {
+  id: 8
+  name: "Consolidation"
+}
+
+item {
+  id: 9
+  name: "Pneumothorax"
+}
+
+

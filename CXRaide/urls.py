@@ -15,5 +15,6 @@ urlpatterns = [
     path('change_image/', views.change_image, name='change-image'),
     path('annotation-edit/', views.annotation_edit, name='annotation-edit'),
     path('download/', views.download, name='download'),
+    path('ai_annotation/', views.ai_annotation, name='ai-annotation'),
 ]
 

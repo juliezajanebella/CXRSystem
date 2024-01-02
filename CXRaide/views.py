@@ -17,9 +17,17 @@ import base64
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_POST
 from django.core.files.base import ContentFile
 import uuid
 from django.utils import timezone
+from django.conf import settings
+
+import tensorflow as tf
+import numpy as np
+from PIL import Image, ImageDraw
+import io
+from IPython.display import display
 
 # main functions
 def create_acc(request):
@@ -154,6 +162,76 @@ def save_image(request):
     else:
         return JsonResponse({'error': 'Invalid HTTP method'}, status=400)
 
+@csrf_exempt
+@require_POST
+def ai_annotation(request):
+    # Load the TensorFlow model and label map (use your paths)
+    # Updated paths
+    SAVED_MODEL_PATH = os.path.join('./static/models/saved_model')
+    LABEL_MAP_PATH = os.path.join('./static/models/label_map2.pbtxt')
+    model = tf.saved_model.load(SAVED_MODEL_PATH)
+    label_map = load_label_map(LABEL_MAP_PATH)
 
- 
+    # Get the image from the request
+    image_data = request.FILES['image'].read()
+    image_np = np.array(Image.open(io.BytesIO(image_data)).convert("RGB"))
 
+    # Prepare the image for inference
+    input_tensor = tf.convert_to_tensor(image_np)
+    input_tensor = input_tensor[tf.newaxis, ...]
+
+    # Run inference
+    detections = model(input_tensor)
+
+    # Process detections and draw annotations
+    annotated_image = draw_detections(image_np, detections, label_map)
+
+    # Convert the annotated image to bytes
+    buffered = io.BytesIO()
+    annotated_image.save(buffered, format="PNG")
+    annotated_image_data = buffered.getvalue()
+
+    # Return the annotated image as JSON response
+    # return JsonResponse({'image_data': annotated_image_data.decode('latin-1')})
+    
+    # Return the annotated image as a file
+    response = HttpResponse(annotated_image_data, content_type='image/png')
+    response['Content-Disposition'] = 'attachment; filename="annotated_image.png"'
+    return response
+
+def load_label_map(label_map_path):
+    label_map = {}
+    with open(label_map_path, 'r') as file:
+        for line in file:
+            if "id:" in line:
+                id = int(line.split(': ')[1])
+                label_map[id] = next(file).split(': ')[1].replace('\n', '').replace("'", "")
+    return label_map
+
+def draw_detections(image_np, detections, label_map):
+    image = Image.fromarray(image_np)
+    draw = ImageDraw.Draw(image)
+    im_width, im_height = image.size
+
+
+    # Processing detections
+    detection_boxes = detections['detection_boxes'][0].numpy()
+    detection_classes = detections['detection_classes'][0].numpy().astype(np.int64)
+    detection_scores = detections['detection_scores'][0].numpy()
+
+
+    for i in range(len(detection_scores)):
+        if detection_scores[i] < 0.1:  # Set a threshold
+            continue
+
+
+        # Bounding box and label drawing
+        ymin, xmin, ymax, xmax = detection_boxes[i]
+        (left, right, top, bottom) = (xmin * im_width, xmax * im_width, ymin * im_height, ymax * im_height)
+        draw.rectangle([(left, top), (right, bottom)], outline=(0, 100, 0), width=4)
+        object_name = label_map[detection_classes[i]]
+        draw.text((left, top), object_name, fill=(139, 0, 0))
+
+
+    # Return the image
+    return image
