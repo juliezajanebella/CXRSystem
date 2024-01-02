@@ -8,6 +8,10 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <title>CXRaide - Generate</title>
     <link rel="stylesheet" href="../static/css/loadImage.css">
+
+    <script>
+        var rawCxrayURL = "{% static 'upload/' %}{{ raw_cxray }}";
+      </script>
 </head>
 <body>
     <!-- NAVBAR -->
@@ -65,6 +69,10 @@
                     <hr>
                     <div class="images">
                         <!-- Put the image here of cxr-image with ground truth -->
+                    </div>
+                    <div class="buttons">
+                        <button class="download-button-annotated" id="download-button-annotated">Download (Annotated Image)</button>
+                        <button class="download-button" id="download-button">Download (AI)</button>
                     </div>
                                 
                 </div>

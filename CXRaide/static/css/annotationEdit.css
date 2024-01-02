@@ -73,7 +73,18 @@
   transform-origin: center;
 }
 
+#box-container {
+  cursor: grab; /* Indicates the image can be moved */
+  transition: transform 0.1s ease; /* Smooths the zoom and drag transitions */
+  /* Initial position set to center the image in the container */
+  transform-origin: center;
+}
+
 #image-to-zoom.grabbing {
+  cursor: grabbing;
+}
+
+#box-container.grabbing {
   cursor: grabbing;
 }
 
@@ -113,4 +124,9 @@ select {
   box-shadow: none;
   background: white;
   border-radius: 4px;
+}
+
+/* center the raw image */
+#box-container{
+  margin-left: 40px
 }
