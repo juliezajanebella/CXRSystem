@@ -332,7 +332,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // HERE FOR ZOOM
-
 document.addEventListener("DOMContentLoaded", function () {
   var zoomInButton = document.getElementById("zoom-in-button"); // Assuming you have this button in your HTML
   var zoomOutButton = document.getElementById("zoom-out-button"); // Assuming you have this button in your HTML
@@ -393,37 +392,38 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-// HERE FOR SAVING
+// HERE FOR SAVING THE ANNOTATED BY EXPERTS
 document.addEventListener("DOMContentLoaded", function () {
-  function downloadURL(url, name) {
-    var link = document.createElement("a");
-    link.download = name;
-    link.href = url;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    delete link;
-  }
-
   var saveButton = document.getElementById("save-button");
 
   saveButton.addEventListener(
     "click",
     function () {
       var dataURL = stage.toDataURL({ pixelRatio: 1 });
-      downloadURL(dataURL, "stage.png");
 
-      //redirect to /download after 3 seconds
-      setTimeout(function () {
-        window.location.href = "/download";
-      }, 3000);
+      // Use AJAX to send the annotated image data to the server
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "/save_image_annotated/", true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          // On successful response, download the image and redirect after 3 seconds
+          // downloadURL(dataURL, "CXRaide-Annotated-Image.png");
+          setTimeout(function () {
+            window.location.href = "/download";
+          }, 500);
+        }
+      };
+      
+      // Send the dataURL as a POST parameter named 'image_data'
+      var params = "image_data=" + encodeURIComponent(dataURL);
+      xhr.send(params);
     },
     false
   );
 });
 
 // HERE FOR AI ANNOTATION
-
 document.addEventListener("DOMContentLoaded", function () {
   console.log("DOMContentLoaded event fired");
   var aiGeneratedBoxContainer = document.getElementById(

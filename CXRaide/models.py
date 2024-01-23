@@ -27,6 +27,14 @@ class AnnotatedImage(models.Model):
 
     def __str__(self):
         return self.annotated_cxray_filename
+    
+class AnnotatedImageByAi(models.Model):
+    annotated_cxray_id_ai = models.AutoField(primary_key=True, verbose_name='Annotated CXray Image By AI ID')
+    annotated_cxray_filename_ai = models.CharField(max_length=100, verbose_name='Annotated CXRay By AI File Name')
+    annotated_cxray_ai = models.ImageField(upload_to='annotated_images/', verbose_name='Annotated CXray Image By AI')
+
+    def __str__(self):
+        return self.annotated_cxray_filename_ai
 
     
 
