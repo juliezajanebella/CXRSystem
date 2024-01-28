@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>User Settings</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+      }
+
+      body {
+        background: whitesmoke;
+        height: 100%;
+        background-position: center;
+        background-size: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      ul {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 30px;
+        background: #fff;
+        border-radius: 5px;
+        box-shadow: 0px 15px 20px rgba(0,0,0,0.1);
+        margin-top: 250px;
+      }
+
+      li {
+        margin: 1rem 0;
+      }
+
+      a {
+        text-decoration: none;
+        color: black;
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      a:hover {
+        color: red;
+      }
+    </style>
+
+  </head>
+  <body>
+    <ul>
+        <li><a href="{% url 'home' %}" class="menus">Home</a></li>
+        <li><a href="{% url 'change-password' %}">Change Password</a></li>
+        <li><a href="{% url 'login' %}">Logout</a></li>
+        <a href="javascript:history.back()" class="login" style="font-size: 16px; margin: 20px;">&laquo; Back</a>
+      </ul>
+
+  </body>
+</html>

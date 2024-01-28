@@ -3,11 +3,12 @@
 # Request -> Response
 # Action
 
+from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages                          
 from .models import Radiologist, RawXray, AnnotatedImage, AnnotatedImageByAi
-from CXRaide.functions import handle_uploaded_file
+# from CXRaide.functions import handle_uploaded_file
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password, check_password
 import os
@@ -64,6 +65,9 @@ def user_login(request):
         messages.error(request, 'Invalid Username or Password.')
     return render(request, 'login.html')
 
+def profile(request):
+    return render(request, 'profile.html')
+
 def about(request):
     return render(request, 'about.html')
 
@@ -77,12 +81,38 @@ def home(request):
         filename, file_extension = os.path.splitext(raw_cxray.name)
 
         # calling the handler of uploaded file
-        handle_uploaded_file(raw_cxray)
-        RawXray.objects.create(raw_cxray_filename=filename, raw_cxray=raw_cxray)
+        # handle_uploaded_file(raw_cxray)
+        RawXray.objects.create(raw_cxray_filename=filename, raw_cxray_image=raw_cxray)
 
         context = {'raw_cxray_filename': filename, 'raw_cxray': raw_cxray}
         return render(request, 'loadImage.html', context)
     return render(request, 'home.html')   # Return None if no file was uploaded
+
+# Pass    
+def change_pass(request):
+    # if request.method == 'POST':
+    #     password = request.POST['password']
+    #     new_pass = request.POST['new_password']
+    #     confnew_pass = request.POST['confirm_new_password']
+        
+
+    #     if Radiologist.objects.filter(radiologist_password=password).exists():
+    #         if new_pass == confnew_pass:
+    #             # Get the first radiologist object with the given password
+    #             radiologist = Radiologist.objects.filter(radiologist_password=password).first()
+    #             # Update the password field
+    #             radiologist.radiologist_password = new_pass
+    #             # Save the changes to the database
+    #             radiologist.save()
+                
+    #             messages.success(request, 'You successfully change your password. You can now login again.')
+    #             return render(request, 'changePass.html')
+    #         else:
+    #             messages.error(request, 'Password and Confirm Password do not match. Please try again.')  
+    #     else:
+    #         messages.error(request, 'Old Password is incorrect. Please try again.')               
+    # # Return the newPass.html template for GET requests
+    return render(request, 'changePass.html')
 
 def change_image(request):
     if request.method == 'POST':
@@ -90,14 +120,14 @@ def change_image(request):
         updated_raw_cxray = request.FILES["raw_cxray"]
         updated_filename, file_extension = os.path.splitext(updated_raw_cxray.name)
 
-        # calling the handler of uploaded file
-        handle_uploaded_file(updated_raw_cxray)
+        # # calling the handler of uploaded file
+        # handle_uploaded_file(updated_raw_cxray)
 
         # fetching the latest created data in database
         latest_cxray = RawXray.objects.order_by('-raw_cxray_id').first()
         update = RawXray.objects.get(raw_cxray_filename=latest_cxray.raw_cxray_filename)
         update.raw_cxray_filename = updated_filename
-        update.raw_cxray = updated_raw_cxray
+        update.raw_cxray_image = updated_raw_cxray
         update.save()
 
         context = {'raw_cxray_filename': updated_filename, 'raw_cxray': updated_raw_cxray}
@@ -109,7 +139,7 @@ def annotation_edit(request):
 
     if raw_xray_obj:
         raw_cxray_filename = raw_xray_obj.raw_cxray_filename
-        raw_cxray = raw_xray_obj.raw_cxray
+        raw_cxray = raw_xray_obj.raw_cxray_image
 
         # Use raw_cxray_name and raw_cxray in your logic or pass to context for rendering
         context = {'raw_cxray_filename': raw_cxray_filename, 'raw_cxray': raw_cxray}
@@ -125,7 +155,7 @@ def download(request):
     context = {}
 
     if annotated_image_raw:
-        annotated_cxray = annotated_image_raw.annotated_cxray
+        annotated_cxray = annotated_image_raw.annotated_cxray_image
 
         # Add raw_cxray_name and raw_cxray to the context
         context.update({
@@ -133,7 +163,7 @@ def download(request):
         })
 
     if annotated_image_ai:
-        annotated_cxray_ai = annotated_image_ai.annotated_cxray_ai
+        annotated_cxray_ai = annotated_image_ai.annotated_cxray_ai_image
 
         # Add raw_cxray_name_ai and raw_cxray_ai to the context
         context.update({
@@ -143,7 +173,8 @@ def download(request):
 
 def download_expert_image(request, filename):
     # Complete file path
-    file_path = os.path.join(settings.MEDIA_ROOT, filename)
+    today_str = datetime.now().strftime('%Y-%m-%d')
+    file_path = os.path.join("CXRaide/static/upload/annotated-images/", today_str, filename)
 
     # Check if file exists
     if os.path.exists(file_path):
@@ -160,7 +191,8 @@ def download_expert_image(request, filename):
 
 def download_ai_image(request, filename):
     # Complete file path
-    file_path = os.path.join(settings.MEDIA_ROOT, filename)
+    today_str = datetime.now().strftime('%Y-%m-%d')
+    file_path = os.path.join("CXRaide/static/upload/annotated-images/", today_str, filename)
 
     # Check if file exists
     if os.path.exists(file_path):
@@ -175,6 +207,13 @@ def download_ai_image(request, filename):
         # Return a 404 Not Found response if the file doesn't exist
         return HttpResponse("File not found", status=404)
 
+
+def get_today_folder_path():
+    # Get the current date as a string formatted as 'MM-DD-YYYY'
+    date_str = datetime.now().strftime('%m-%d-%Y')
+    # Create the directory path
+    return (date_str)
+
 @csrf_exempt
 def save_image_annotated(request):
     if request.method == 'POST':
@@ -187,15 +226,24 @@ def save_image_annotated(request):
 
             # Decode the base64 data
             data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext) 
-            
+
+            # Create the folder path for today's date
+            today_folder_path = get_today_folder_path()
+            # os.makedirs(today_folder_path, exist_ok=True)
+
+       
+            # Define the filename with the directory
+            filename = os.path.join(today_folder_path, "CXRaide-Annotated-Image-By-Experts.jpg")
+
             annotated_image = AnnotatedImage()
-            annotated_image.annotated_cxray_filename = "CXRaide-Annotated-Image-By-Expert." + ext
-            annotated_image.annotated_cxray.save(annotated_image.annotated_cxray_filename, data, save=True)
+            annotated_image.annotated_cxray_filename = filename
+            annotated_image.annotated_cxray_image.save(filename, data, save=True)
 
             return JsonResponse({'message': 'Image saved successfully.'})
         else:
             return JsonResponse({'message': 'No image data provided.'}, status=400)
-    return JsonResponse({'message': 'Invalid request method.'}, status=400)
+    else:
+        return JsonResponse({'message': 'Invalid request method.'}, status=400)
 
 
 # FOR AI MODEL
@@ -256,24 +304,28 @@ def ai_annotation(request):
     # Process detections and draw annotations
     annotated_image = draw_detections(image_np, detections, label_map)
 
-    # After drawing the detections:
-    annotated_image = draw_detections(image_np, detections, label_map)
-
     # Convert the annotated image to bytes
     buffered = io.BytesIO()
-    annotated_image.save(buffered, format="PNG")
+    annotated_image.save(buffered, format="JPEG")
     annotated_image_data = buffered.getvalue()
+
+    # Create the folder path for today's date
+    today_folder_path = get_today_folder_path()
+    # os.makedirs(today_folder_path, exist_ok=True)
+
+    # Define the filename with the directory
+    filename = os.path.join(today_folder_path, "CXRaide-Annotated-Image-By-AI.jpg")
 
     # Save the annotated image to AnnotatedImageByAi model
     annotated_image_instance = AnnotatedImageByAi()
-    filename = "CXRaide-Annotated-Image-By-AI.png"
     annotated_image_instance.annotated_cxray_filename_ai = filename
-    annotated_image_instance.annotated_cxray_ai.save(filename, ContentFile(annotated_image_data), save=True)
+    annotated_image_instance.annotated_cxray_ai_image.save(filename, ContentFile(annotated_image_data), save=True)
 
-    # Return the annotated image as JSON response
-    # return JsonResponse({'image_data': annotated_image_data.decode('latin-1')})
-    # Return the annotated image as a file
     # Return the annotated image as a file
     response = HttpResponse(annotated_image_data, content_type='image/png')
-    response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
+    response['Content-Disposition'] = 'attachment; filename="' + os.path.basename(filename) + '"'
     return response
+
+
+
+# STARTS MODIFYING HERE BE CAREFUUUUUUUUUUUUUUUUUUUUUUUUUULLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL!!!!!!!!!!!

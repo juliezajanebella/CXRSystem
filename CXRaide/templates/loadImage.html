@@ -28,8 +28,7 @@
                     <li><a href="{% url 'contact' %}">Contact Us</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-                    <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+                    <li><a href="{% url 'profile' %}"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
                 </ul>
             </div>
         </div>
@@ -66,7 +65,7 @@
                     <!-- display image -->
                     <div class="cxr-image"> 
                         <h4>Chest X-ray Filename: {{ raw_cxray_filename }}</h4>
-                        <img src="../static/upload/{{raw_cxray}}" alt={{ raw_cxray }} height="50%" width="50%">
+                        <img src="../static/upload/raw_images/{{raw_cxray}}" alt={{ raw_cxray }} height="50%" width="50%">
                     </div>
                     <hr>
                     <div class="buttons">

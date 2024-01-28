@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <title>CXRaide - Home</title>
-  <link rel="stylesheet" href="../static/css/home.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>CXRaide - Home</title>
+    <link rel="stylesheet" href="../static/css/home.css">
 </head>
 
 {% load static %}
+
 <body>
     <!-- NAVBAR -->
     <nav class="navbar navbar-inverse">
@@ -19,7 +21,7 @@
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>                        
+                    <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="#">CXRaide</a>
             </div>
@@ -30,14 +32,13 @@
                     <li><a href="{% url 'contact' %}">Contact Us</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-                    <li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+                    <li><a href="{% url 'profile' %}"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
                 </ul>
             </div>
         </div>
     </nav>
     <!-- BODY -->
-    <div class="container-fluid text-center">   
+    <div class="container-fluid text-center">
         <div class="row content">
             <div class="col-sm-2 sidenav" id="tools-container">
                 <div class="well">
@@ -61,8 +62,8 @@
                     <p class="undo-redo-button">UNDO and REDO</p>
                 </div>
             </div>
-            <div class="col-sm-8 text-left"> 
-                {% include 'CXRaide/includes/message.html' %} 
+            <div class="col-sm-8 text-left">
+                {% include 'CXRaide/includes/message.html' %}
                 <div class="text-container">
                     <h1>Welcome, Doctor!</h1>
                     <h4>Let's now annotate</h4>
@@ -72,14 +73,9 @@
                         <!-- NEW UPDATE -->
                         <div class="upload-container">
                             <input type="file" name="raw_cxray" value="{{ raw_cxray }}" required>
-                            <button class="load-button">Load Image</button> 
+                            <button class="load-button">Load Image</button>
                         </div>
-                        <!-- ================================================================== -->
-                        <!-- Image Caption: <input type="text" name="raw_cxray_name" value="{{ raw_cxray_name }}" placeholder="Enter Here" required> -->
-                        <!-- <br><br><input type="file" name="raw_cxray" value="{{ raw_cxray }}" required>
-                        <hr>
-                        <br><button>Load Image</button>     -->
-                    </form>  
+                    </form>
                 </div>
             </div>
             <div class="col-sm-2 sidenav">
@@ -96,4 +92,5 @@
         </div>
     </div>
 </body>
+
 </html>

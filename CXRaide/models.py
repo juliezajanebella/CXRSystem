@@ -15,7 +15,7 @@ class Radiologist(models.Model): # details of user (radiologists)
 class RawXray(models.Model): # for raw xray images
     raw_cxray_id = models.AutoField(primary_key=True, verbose_name='Raw CXray Image ID')
     raw_cxray_filename = models.CharField(max_length=100, verbose_name='Raw CXRay File Name')
-    raw_cxray = models.FileField(upload_to="", verbose_name='Raw CXray Image')
+    raw_cxray_image = models.FileField(upload_to="raw_images/", verbose_name='Raw CXray Image')
     
     def __str__(self):
         return self.raw_cxray_filename
@@ -23,7 +23,7 @@ class RawXray(models.Model): # for raw xray images
 class AnnotatedImage(models.Model):
     annotated_cxray_id = models.AutoField(primary_key=True, verbose_name='Annotated CXray Image ID')
     annotated_cxray_filename = models.CharField(max_length=100, verbose_name='Annotated CXRay File Name')
-    annotated_cxray = models.ImageField(upload_to='annotated_images/', verbose_name='Annotated CXray Image')
+    annotated_cxray_image = models.ImageField(upload_to='annotated_images/', verbose_name='Annotated CXray Image')
 
     def __str__(self):
         return self.annotated_cxray_filename
@@ -31,7 +31,7 @@ class AnnotatedImage(models.Model):
 class AnnotatedImageByAi(models.Model):
     annotated_cxray_id_ai = models.AutoField(primary_key=True, verbose_name='Annotated CXray Image By AI ID')
     annotated_cxray_filename_ai = models.CharField(max_length=100, verbose_name='Annotated CXRay By AI File Name')
-    annotated_cxray_ai = models.ImageField(upload_to='annotated_images/', verbose_name='Annotated CXray Image By AI')
+    annotated_cxray_ai_image = models.ImageField(upload_to='annotated_images/', verbose_name='Annotated CXray Image By AI')
 
     def __str__(self):
         return self.annotated_cxray_filename_ai
