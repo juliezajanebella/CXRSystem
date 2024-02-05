@@ -22,6 +22,9 @@ from PIL import Image, ImageDraw
 import io
 import base64
 from django.conf import settings
+from weasyprint import HTML
+from django.template.loader import render_to_string
+
 
 
 # main functions
@@ -149,13 +152,13 @@ def annotation_edit(request):
         pass
 
 def download(request):
-    annotated_image_raw = AnnotatedImage.objects.last()
+    annotated_image_expert = AnnotatedImage.objects.last()
     annotated_image_ai = AnnotatedImageByAi.objects.last()
 
     context = {}
 
-    if annotated_image_raw:
-        annotated_cxray = annotated_image_raw.annotated_cxray_image
+    if annotated_image_expert:
+        annotated_cxray = annotated_image_expert.annotated_cxray_image
 
         # Add raw_cxray_name and raw_cxray to the context
         context.update({
@@ -206,7 +209,58 @@ def download_ai_image(request, filename):
     else:
         # Return a 404 Not Found response if the file doesn't exist
         return HttpResponse("File not found", status=404)
+    
+def download_pdf_expert_image(request):
+    annotated_image_expert = AnnotatedImage.objects.last()
 
+    context = {}
+
+    if annotated_image_expert:
+        annotated_cxray = annotated_image_expert.annotated_cxray_image
+
+        context.update({
+            'annotated_cxray': annotated_cxray
+        })
+
+    # Render the HTML template with the image URLs and other context data
+    html_string = render_to_string('CXRaide/includes/document.html', context, request=request)
+
+    # Create a WeasyPrint HTML object and then generate a PDF
+    html = HTML(string=html_string, base_url=request.build_absolute_uri())
+    pdf = html.write_pdf()
+
+    # Create an HTTP response with the PDF file
+    response = HttpResponse(pdf, content_type='application/pdf')
+    # Content-Disposition header to make the browser download the PDF
+    response['Content-Disposition'] = 'attachment; filename="annotated_chest_xrays_annotated-by-expert.pdf"'
+
+    return response
+
+def download_pdf_ai_image(request):
+    annotated_image_ai = AnnotatedImageByAi.objects.last()
+    
+    context = {}
+
+    if annotated_image_ai:
+        annotated_cxray_ai = annotated_image_ai.annotated_cxray_ai_image
+
+        context.update({
+            'annotated_cxray_ai': annotated_cxray_ai
+        })
+
+    # Render the HTML template with the image URLs and other context data
+    html_string = render_to_string('CXRaide/includes/document.html', context, request=request)
+
+    # Create a WeasyPrint HTML object and then generate a PDF
+    html = HTML(string=html_string, base_url=request.build_absolute_uri())
+    pdf = html.write_pdf()
+
+    # Create an HTTP response with the PDF file
+    response = HttpResponse(pdf, content_type='application/pdf')
+    # Content-Disposition header to make the browser download the PDF
+    response['Content-Disposition'] = 'attachment; filename="annotated_chest_xrays_ai-generated.pdf"'
+
+    return response
 
 def get_today_folder_path():
     # Get the current date as a string formatted as 'MM-DD-YYYY'
@@ -325,7 +379,3 @@ def ai_annotation(request):
     response = HttpResponse(annotated_image_data, content_type='image/png')
     response['Content-Disposition'] = 'attachment; filename="' + os.path.basename(filename) + '"'
     return response
-
-
-
-# STARTS MODIFYING HERE BE CAREFUUUUUUUUUUUUUUUUUUUUUUUUUULLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL!!!!!!!!!!!

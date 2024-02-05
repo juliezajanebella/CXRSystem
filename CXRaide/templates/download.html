@@ -52,25 +52,25 @@
             <div class="col-sm-2 sidenav" id="tools-container">
                 <div class="well">
                     <img src="../static/images/point-icon.png" alt="" id="point-icon">
-                    <p>POINT</p>
+                    <p class="point-button">POINT</p>
                 </div>
                 <div class="well">
                     <img src="../static/images/box-icon.png" alt="" id="box-icon">
-                    <p>BOX</p>
+                    <p class="box-button">BOX</p>
                 </div>
                 <div class="well">
                     <img src="../static/images/zoom-icon.png" alt="" id="zoom-icon">
-                    <p>ZOOM</p>
-                </div>
-                <div class="well">
-                    <img src="../static/images/move-icon.png" alt="" id="move-icon">
-                    <p>MOVE</p>
+                    <p class="zoom-button">ZOOM</p>
                 </div>
                 <div class="well">
                     <img src="../static/images/light-icon.png" alt="" id="light-icon">
-                    <p>LIGHT</p>
+                    <p class="light-button">LIGHT</p>
                 </div>
-            </div>
+                <div class="well">
+                    <img src="../static/images/undo-redo-icon.png" alt="" id="move-icon">
+                    <p class="undo-redo-button">UNDO and REDO</p>
+                </div>
+            </div>  
             <div class="col-sm-8 text-left">
                 <div class="text-container">
                     <h2>Download the Annotated Chesy X-ray</h2>
@@ -83,8 +83,8 @@
                                 <h4>Chest X-ray Image (Expert Generated)</h4>
                                 <img src="{{ annotated_cxray.url }}" alt="Annotated Chest X-ray">
                                 <div class="buttons">
-                                    <a href="{% url 'download_expert' filename=annotated_cxray.file.name %}" download>
-                                        <button class="download-button">Download and Print</button>
+                                    <a href="{% url 'download_pdf_expert_image' %}" download>
+                                        <button class="download-button" id="download-button-raw">Download and Print</button>
                                     </a>
                                 </div>
                             </div>
@@ -95,8 +95,8 @@
                                 <h4>Chest X-ray Image (AI Generated)</h4>
                                 <img src="{{ annotated_cxray_ai.url }}" alt="AI Generated Chest X-ray">
                                 <div class="buttons">
-                                    <a href="{% url 'download_ai' filename=annotated_cxray_ai.file.name %}" download>
-                                        <button class="download-button">Download and Print</button>
+                                    <a href="{% url 'download_pdf_ai_image' %}" download>
+                                        <button class="download-button" id="download-button-ai">Download and Print</button>
                                     </a>
                                 </div>
                             </div>
@@ -116,7 +116,7 @@
                         <input type="radio" id="annotatedByExperts" name="annotationType" value="experts">
                         <!-- Abnormalities Read-Only Input for Experts -->
                         <input type="text" readonly class="readonly-input" id="abnormalitiesExperts" name="abnormalitiesExperts" 
-                            value=" Abnormalities">
+                            value="Abnormalities">
                     </div>
                     <hr>
                     <div class="well">
