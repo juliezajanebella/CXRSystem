@@ -4,6 +4,7 @@
 # Action
 
 from datetime import datetime
+import json
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages                          
@@ -209,32 +210,42 @@ def download_ai_image(request, filename):
     else:
         # Return a 404 Not Found response if the file doesn't exist
         return HttpResponse("File not found", status=404)
-    
+
+# connected method for pdf expert
+@csrf_exempt
+def save_abnormality(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        print("Received Main Abnormality:", data.get('mainAbnormality'))
+        print("Received Sub Abnormality:", data.get('subAbnormality'))
+        request.session['mainAbnormality'] = data['mainAbnormality']
+        request.session['subAbnormality'] = data['subAbnormality']
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)
+
+
 def download_pdf_expert_image(request):
     annotated_image_expert = AnnotatedImage.objects.last()
-
     context = {}
 
     if annotated_image_expert:
         annotated_cxray = annotated_image_expert.annotated_cxray_image
-
         context.update({
-            'annotated_cxray': annotated_cxray
+            'annotated_cxray': annotated_cxray,
+            'mainAbnormality': request.session.get('mainAbnormality', 'No main abnormality selected'),
+            'subAbnormality': request.session.get('subAbnormality', 'No sub abnormality selected')
         })
 
-    # Render the HTML template with the image URLs and other context data
-    html_string = render_to_string('CXRaide/includes/document.html', context, request=request)
+    print("Using Main Abnormality:", request.session.get('mainAbnormality'))
+    print("Using Sub Abnormality:", request.session.get('subAbnormality'))
 
-    # Create a WeasyPrint HTML object and then generate a PDF
+    html_string = render_to_string('CXRaide/includes/document.html', context, request=request)
     html = HTML(string=html_string, base_url=request.build_absolute_uri())
     pdf = html.write_pdf()
-
-    # Create an HTTP response with the PDF file
     response = HttpResponse(pdf, content_type='application/pdf')
-    # Content-Disposition header to make the browser download the PDF
     response['Content-Disposition'] = 'attachment; filename="annotated_chest_xrays_annotated-by-expert.pdf"'
-
     return response
+
 
 def download_pdf_ai_image(request):
     annotated_image_ai = AnnotatedImageByAi.objects.last()

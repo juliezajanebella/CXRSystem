@@ -4,7 +4,9 @@ document.addEventListener("DOMContentLoaded", function () {
   // element references
   var boxButton = document.getElementById("box-button");
   var pointButton = document.getElementById("point-button");
+  var saveButton = document.getElementById("save-button");
   var abnormalitiesDropdown = document.getElementById("abnormalities");
+  var selectedLabel = document.getElementById("abnormalities").value;
 
   // konva stage and layer setup
   var stageWidth = 512;
@@ -60,6 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var currentGroup;
   var currentTransformer;
   var pointTransformer;
+  var selectedAbnormalities = [];    // This array will hold all selected abnormalities for boxes
 
   // utility functions
   function updateTextBackground(label, background) {
@@ -120,6 +123,45 @@ document.addEventListener("DOMContentLoaded", function () {
     globalBoxTransformer.moveToTop();
     layer.draw();
   }
+  function createRulerMarks() {
+    // Horizontal ruler on top
+    for (let i = 0; i < stageWidth; i += 10) {
+      layer.add(new Konva.Line({
+        points: [i, 0, i, 8],
+        stroke: 'white',
+        strokeWidth: 2,
+      }));
+      if (i % 50 === 0) { // longer line for every 50 pixels
+        layer.add(new Konva.Text({
+          x: i,
+          y: 5,
+          text: i / 50,
+          fontSize: 15,
+          fill:'white'
+        }));
+      }
+    }
+
+    // Vertical ruler on left
+    for (let j = 0; j < stageHeight; j += 10) {
+      layer.add(new Konva.Line({
+        points: [0, j, 8, j],
+        stroke: 'white',
+        strokeWidth: 2,
+      }));
+      if (j % 50 === 0) { // longer line for every 50 pixels
+        layer.add(new Konva.Text({
+          x: 5,
+          y: j,
+          text: j / 50,
+          fontSize: 15,
+          fill:'white',
+        }));
+      }
+    }
+    
+    layer.draw();
+  }
 
   // main functionality
   function createBox() {
@@ -161,6 +203,13 @@ document.addEventListener("DOMContentLoaded", function () {
     textBackground.width(label.width() + 20); // Padding of 10 on each side
     textBackground.height(label.height() + 5); // Padding of 5 on top and bottom
     group.add(box);
+
+    // Add the selected label to the array
+    if (selectedLabel !== "Select Label") {
+      selectedAbnormalities.push(selectedLabel);
+      // Save the array to local storage
+      localStorage.setItem("selectedAbnormalities", JSON.stringify(selectedAbnormalities));
+    }
 
     // initial update for the text background size
     updateTextBackground(label, textBackground);
@@ -236,9 +285,42 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
+  saveButton.addEventListener("click", function () {
+
+    // Hide the transformers before capturing the data URL of the stage
+    if (globalBoxTransformer.nodes().length) {
+      globalBoxTransformer.nodes([]);
+    }
+    if (pointTransformer && pointTransformer.visible()) {
+      pointTransformer.visible(false);
+    }
+    layer.draw(); // Ensure the canvas is updated without the transformers
+
+    var dataURL = stage.toDataURL({ pixelRatio: 1 });
+
+    // Use AJAX to send the annotated image data to the server
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/save_image_annotated/", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState == 4 && xhr.status == 200) {
+        // On successful response, download the image and redirect after 3 seconds
+        setTimeout(function () {
+          window.location.href = "/download";
+        }, 500);
+      }
+    };
+    
+    // Send the dataURL as a POST parameter named 'image_data'
+    var params = "image_data=" + encodeURIComponent(dataURL);
+    xhr.send(params);
+  },
+    false
+  );
 
   // logic handle stage on click
   stage.on("click", function (e) {
+    // Adding points logic
     if (addingPoints && currentGroup && e.target === currentGroup.children[0]) {
       var box = currentGroup.children[0];
       var relativePos = currentGroup.getRelativePointerPosition();
@@ -249,29 +331,18 @@ document.addEventListener("DOMContentLoaded", function () {
         fill: "red",
         draggable: true,
         dragBoundFunc: function (pos) {
-          // Get the absolute position of the box
+          // Constrain the position within the box
           var boxAbsPos = box.getAbsolutePosition();
-          // Get the size of the box
           var boxWidth = box.width() * box.scaleX();
           var boxHeight = box.height() * box.scaleY();
-          // Calculate the bounds
-          var newX = Math.max(
-            boxAbsPos.x,
-            Math.min(pos.x, boxAbsPos.x + boxWidth)
-          );
-          var newY = Math.max(
-            boxAbsPos.y,
-            Math.min(pos.y, boxAbsPos.y + boxHeight)
-          );
-          // Return the new constrained position
           return {
-            x: newX,
-            y: newY,
+            x: Math.max(boxAbsPos.x, Math.min(pos.x, boxAbsPos.x + boxWidth)),
+            y: Math.max(boxAbsPos.y, Math.min(pos.y, boxAbsPos.y + boxHeight))
           };
         },
       });
 
-      // Add the new point to the current box's list of points
+      // Add point to box's points array
       if (currentGroup.children[0].points) {
         currentGroup.children[0].points.push(point);
       }
@@ -280,30 +351,28 @@ document.addEventListener("DOMContentLoaded", function () {
       currentGroup.add(point);
       layer.draw();
     } else if (e.target.getClassName() === "Circle") {
+      // Handle click on a point
       handlePointClick(e.target);
-
-      // Stop event propagation to prevent selecting the box
       e.cancelBubble = true;
-
-      // Attach the transformer to the clicked point
       attachTransformerToPoint(e.target);
-    } else if (e.target === stage) {
-      if (currentTransformer) {
-        currentTransformer.nodes([]);
+    } else {
+      // Check if the click was not on a box or a point (include image clicks here)
+      if (e.target === stage || e.target.getClassName() === "Image") {
+        // Clear transformers attached to boxes or points
+        if (currentTransformer) {
+          currentTransformer.nodes([]);
+        }
+        if (pointTransformer) {
+          pointTransformer.visible(false);
+        }
+        if (globalBoxTransformer.nodes().length) {
+          globalBoxTransformer.nodes([]);
+        }
         layer.draw();
       }
-      if (pointTransformer) {
-        pointTransformer.visible(false);
-        layer.draw();
-      }
-    }
-
-    // Detach transformer when clicking outside of any boxes
-    if (e.target === stage) {
-      globalBoxTransformer.nodes([]);
-      layer.draw();
     }
   });
+
   window.addEventListener("keydown", function (e) {
     if (e.key === "Delete") {
       // Check if the point transformer has a selected node
@@ -329,6 +398,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
   createPointTransformer();
+  createRulerMarks();
 });
 
 // HERE FOR ZOOM
@@ -390,37 +460,6 @@ document.addEventListener("DOMContentLoaded", function () {
       imageToZoom.style.top = imgRect.top + deltaY + "px";
     }
   });
-});
-
-// HERE FOR SAVING THE ANNOTATED BY EXPERTS
-document.addEventListener("DOMContentLoaded", function () {
-  var saveButton = document.getElementById("save-button");
-
-  saveButton.addEventListener(
-    "click",
-    function () {
-      var dataURL = stage.toDataURL({ pixelRatio: 1 });
-
-      // Use AJAX to send the annotated image data to the server
-      var xhr = new XMLHttpRequest();
-      xhr.open("POST", "/save_image_annotated/", true);
-      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-          // On successful response, download the image and redirect after 3 seconds
-          // downloadURL(dataURL, "CXRaide-Annotated-Image.png");
-          setTimeout(function () {
-            window.location.href = "/download";
-          }, 500);
-        }
-      };
-      
-      // Send the dataURL as a POST parameter named 'image_data'
-      var params = "image_data=" + encodeURIComponent(dataURL);
-      xhr.send(params);
-    },
-    false
-  );
 });
 
 // HERE FOR AI ANNOTATION
@@ -490,3 +529,4 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 });
+

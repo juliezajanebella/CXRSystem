@@ -97,23 +97,217 @@
             <div class="col-sm-2 sidenav">
                 <div class="well" id="label-dropdown">
                     <label for="abnormalities">Abnormalities:</label>
-                    <select name="abnormalities" id="abnormalities">
-                        <option value="select_label"></option>
-                        <option value="atelectasis">Atelectasis</option>
-                        <option value="cardiomegaly">Cardiomegaly</option>
-                        <option value="consolidation">Consolidation</option>
-                        <option value="infiltration">Infiltration</option>
-                        <option value="nodule_mass">Nodule/Mass</option>
-                        <option value="pleural_thickening">Pleural thickening</option>
-                        <option value="pneumothorax">Pneumothorax</option>
-                        <option value="pulmonary_fibrosis">Pulmonary fibrosis</option>
-                        <option value="pleural_effusion">Pleural effusion</option>
+                    <select name="abnormalities" id="abnormalities" onchange="showSubAbnormalities()">
+                        <option value="Select Label"></option>
+                        <option value="Atelectasis">Atelectasis</option>
+                        <option value="Cardiomegaly">Cardiomegaly</option>
+                        <option value="Consolidation">Consolidation</option>
+                        <option value="Infiltration">Infiltration</option>
+                        <option value="Nodule Mass">Nodule/Mass</option>
+                        <option value="Pleural Thickening">Pleural Thickening</option>
+                        <option value="Pulmonary Fibrosis">Pulmonary Fibrosis</option>
+                        <option value="Pulmonary Nodule">Pulmonary Nodule</option>
+                        <option value="Mucoid Impaction">Mucoid Impaction</option>
+                        <option value="Pulmonary Lucency">Pulmonary Lucency</option>
+                        <option value="Mediastinal Masses">Mediastinal Masses</option>
+                        <option value="Mediastinal Widening">Mediastinal Widening</option>
+                        <option value="Pneumomediastinum">Pneumomediastinum</option>
+                        <option value="Pneumopericardium">Pneumopericardium</option>
+                        <option value="Hilar Disease">Hilar Disease</option>
+                        <option value="Localized Pleural Thickening">Localized Pleural Thickening</option>
+                        <option value="Diffuse Pleural Thickening">Diffuse Pleural Thickening</option>
+                        <option value="Pleural and Extrapleural Lesions">Pleural and Extrapleural Lesions</option>
+                        <option value="Chest Wall Lesions">Chest Wall Lesions</option>
+                        <option value="Diaphragmatic Abnormalities">Diaphragmatic Abnormalities</option>
                     </select>
+                </div>
+                <div class="well" id="sub-abnormalities" style="display: none;">
+                    <!-- Sub Abnormalities dropdowns will be dynamically added here -->
                 </div>
                 <div class="well">
                     <p>Color</p>
                 </div>
             </div>
+            <script>
+                function showSubAbnormalities() {
+                    var mainAbnormality = document.getElementById("abnormalities").value;
+                    localStorage.setItem('selectedMainAbnormality', mainAbnormality); // Save immediately when changed
+
+                    var subAbnormality = document.getElementById("sub-abnormalities");
+                    subAbnormality.innerHTML = ""; // Clear previous sub-abnormalities
+
+                    if (mainAbnormality !== "Select Label") {
+                        var subAbnormalityDropdown = document.createElement("select");
+                        subAbnormalityDropdown.name = mainAbnormality + "-details";
+                        subAbnormalityDropdown.id = mainAbnormality + "-details";
+                        subAbnormalityDropdown.classList.add('subtype-dropdown');
+                        subAbnormalityDropdown.innerHTML = "<option value='select_detail'>Select Subtype Abnormality</option>";
+                        subAbnormalityDropdown.onchange = function() { saveSubAbnormality(subAbnormalityDropdown.id, subAbnormalityDropdown.value); };
+
+                        switch (mainAbnormality) {
+                            case "Atelectasis":
+                                subAbnormalityDropdown.innerHTML += "<option value='Lobar'>Lobar</option>" +
+                                                            "<option value='Segmental'>Segmental</option>" +
+                                                            "<option value='Rounded'>Rounded</option>" +
+                                                            "<option value='Right Upper Lobe'>Right Upper Lobe</option>";
+                                                            "<option value='Right Lower Lobe'>Right Lower Lobe</option>";
+                                                            "<option value='Left Upper Lobe'>Left Upper Lobe</option>";
+                                                            "<option value='Left Lower Lobe'>Left Lower Lobe</option>";
+                                                            "<option value='Interstitial Disease'>Interstitial Disease</option>";
+                                break;
+                            case "Cardiomegaly":
+                                subAbnormalityDropdown.innerHTML += "<option value='Cardiomegaly Sub1'>Cardiomegaly Sub1</option>" +
+                                                                "<option value='Cardiomegaly Sub2'>Cardiomegaly Sub2</option>" +
+                                                                "<option value='Cardiomegaly Sub3'>Cardiomegaly Sub3</option>" +
+                                                                "<option value='Cardiomegaly Sub4'>Cardiomegaly Sub4</option>";
+                                break;
+                            case "Consolidation":
+                                subAbnormalityDropdown.innerHTML += "<option value='Consolidation Sub1'>Consolidation Sub1</option>" +
+                                                                "<option value='Consolidation Sub2'>Consolidation Sub2</option>" +
+                                                                "<option value='Consolidation Sub3'>Consolidation Sub3</option>" +
+                                                                "<option value='Consolidation Sub4'>Consolidation Sub4</option>";
+                                break;
+                            case "Infiltration":
+                                subAbnormalityDropdown.innerHTML += "<option value='Infiltration Sub1'>Infiltration Sub1</option>" +
+                                                                "<option value='Infiltration Sub2'>Infiltration Sub2</option>" +
+                                                                "<option value='Infiltration Sub3'>Infiltration Sub3</option>" +
+                                                                "<option value='Infiltration Sub4'>Infiltration Sub4</option>";
+                                break;
+                            case "Nodule Mass":
+                                subAbnormalityDropdown.innerHTML += "<option value='Nodule Mass Sub1'>Nodule Mass Sub1</option>" +
+                                                                "<option value='Nodule Mass Sub2'>Nodule Mass Sub2</option>" +
+                                                                "<option value='Nodule Mass Sub3'>Nodule Mass Sub3</option>" +
+                                                                "<option value='Nodule Mass Sub4'>Nodule Mass Sub4</option>";
+                                break;
+                            case "Pleural Thickening":
+                                subAbnormalityDropdown.innerHTML += "<option value='Pleural Thickening Sub1'>Pleural Thickening Sub1</option>" +
+                                                                "<option value='Pleural Thickening Sub2'>Pleural Thickening Sub2</option>" +
+                                                                "<option value='Pleural Thickening Sub3'>Pleural Thickening Sub3</option>" +
+                                                                "<option value='Pleural Thickening Sub4'>Pleural Thickening Sub4</option>";
+                                break;
+                            case "Pulmonary Fibrosis":
+                                subAbnormalityDropdown.innerHTML += "<option value='Pulmonary Fibrosis Sub1'>Pulmonary Fibrosis Sub1</option>" +
+                                                                "<option value='Pulmonary Fibrosis Sub2'>Pulmonary Fibrosis Sub2</option>" +
+                                                                "<option value='Pulmonary Fibrosis Sub3'>Pulmonary Fibrosis Sub3</option>" +
+                                                                "<option value='Pulmonary Fibrosis Sub4'>Pulmonary Fibrosis Sub4</option>";
+                                break;
+                            case "Pleural Effusion":
+                                subAbnormalityDropdown.innerHTML += "<option value='Pleural Effusion Sub1'>Pleural Effusion Sub1</option>" +
+                                                                "<option value='Pleural Effusion Sub2'>Pleural Effusion Sub2</option>" +
+                                                                "<option value='Pleural Effusion Sub3'>Pleural Effusion Sub3</option>" +
+                                                                "<option value='Pleural Effusion Sub4'>Pleural Effusion Sub4</option>";
+                                break;
+                            case "Pleural Effusion":
+                                subAbnormalityDropdown.innerHTML += "<option value='Pleural Effusion Sub1'>Pleural Effusion Sub1</option>" +
+                                                                "<option value='Pleural Effusion Sub2'>Pleural Effusion Sub2</option>" +
+                                                                "<option value='Pleural Effusion Sub3'>Pleural Effusion Sub3</option>" +
+                                                                "<option value='Pleural Effusion Sub4'>Pleural Effusion Sub4</option>";
+                                break;
+                            case "Pulmonary Nodule":
+                                subAbnormalityDropdown.innerHTML += "<option value='Pulmonary Nodule Sub1'>Pulmonary Nodule Sub1</option>" +
+                                                                "<option value='Pulmonary Nodule Sub2'>Pulmonary Nodule Sub2</option>" +
+                                                                "<option value='Pulmonary Nodule Sub3'>Pulmonary Nodule Sub3</option>" +
+                                                                "<option value='Pulmonary Nodule Sub4'>Pulmonary Nodule Sub4</option>";
+                                break;
+                            case "Mucoid Impaction":
+                                subAbnormalityDropdown.innerHTML += "<option value='Mucoid Impaction Sub1'>Mucoid Impaction Sub1</option>" +
+                                                                "<option value='Mucoid Impaction Sub2'>Mucoid Impaction Sub2</option>" +
+                                                                "<option value='Mucoid Impaction Sub3'>Mucoid Impaction Sub3</option>" +
+                                                                "<option value='Mucoid Impaction Sub4'>Mucoid Impaction Sub4</option>";
+                                break;                            
+                            case "Pulmonary Lucency":
+                                subAbnormalityDropdown.innerHTML += "<option value='Pulmonary Lucency Sub1'>Pulmonary Lucency Sub1</option>" +
+                                                                "<option value='Pulmonary Lucency Sub2'>Pulmonary Lucency Sub2</option>" +
+                                                                "<option value='Pulmonary Lucency Sub3'>Pulmonary Lucency Sub3</option>" +
+                                                                "<option value='Pulmonary Lucency Sub4'>Pulmonary Lucency Sub4</option>";
+                                break;                            
+                            case "Mediastinal Masses":
+                                subAbnormalityDropdown.innerHTML += "<option value='Mediastinal Masses Sub1'>Mediastinal Masses Sub1</option>" +
+                                                                "<option value='Mediastinal Masses Sub2'>Mediastinal Masses Sub2</option>" +
+                                                                "<option value='Mediastinal Masses Sub3'>Mediastinal Masses Sub3</option>" +
+                                                                "<option value='Mediastinal Masses Sub4'>Mediastinal Masses Sub4</option>";
+                                break;                            
+                            case "Mediastinal Widening":
+                                subAbnormalityDropdown.innerHTML += "<option value='Mediastinal Widening Sub1'>Mediastinal Widening Sub1</option>" +
+                                                                "<option value='Mediastinal Widening Sub2'>Mediastinal Widening Sub2</option>" +
+                                                                "<option value='Mediastinal Widening Sub3'>Mediastinal Widening Sub3</option>" +
+                                                                "<option value='Mediastinal Widening Sub4'>Mediastinal Widening Sub4</option>";
+                                break;                            
+                            case "Pneumomediastinum":
+                                subAbnormalityDropdown.innerHTML += "<option value='Pneumomediastinum Sub1'>Pneumomediastinum Sub1</option>" +
+                                                                "<option value='Pneumomediastinum Sub2'>Pneumomediastinum Sub2</option>" +
+                                                                "<option value='Pneumomediastinum Sub3'>Pneumomediastinum Sub3</option>" +
+                                                                "<option value='Pneumomediastinum Sub4'>Pneumomediastinum Sub4</option>";
+                                break;                            
+                            case "Pneumopericardium":
+                                subAbnormalityDropdown.innerHTML += "<option value='Pneumopericardium Sub1'>Pneumopericardium Sub1</option>" +
+                                                                "<option value='Pneumopericardium Sub2'>Pneumopericardium Sub2</option>" +
+                                                                "<option value='Pneumopericardium Sub3'>Pneumopericardium Sub3</option>" +
+                                                                "<option value='Pneumopericardium Sub4'>Pneumopericardium Sub4</option>";
+                                break;
+                            case "Hilar Disease":
+                                subAbnormalityDropdown.innerHTML += "<option value='Hilar Disease Sub1'>Hilar Disease Sub1</option>" +
+                                                                "<option value='Hilar Disease Sub2'>Hilar Disease Sub2</option>" +
+                                                                "<option value='Hilar Disease Sub3'>Hilar Disease Sub3</option>" +
+                                                                "<option value='Hilar Disease Sub4'>Hilar Disease Sub4</option>";
+                                break;
+                            case "Localized Pleural Thickening":
+                                subAbnormalityDropdown.innerHTML += "<option value='Localized Pleural Thickening Sub1'>Localized Pleural Thickening Sub1</option>" +
+                                                                "<option value='Localized Pleural Thickening Sub2'>Localized Pleural Thickening Sub2</option>" +
+                                                                "<option value='Localized Pleural Thickening Sub3'>Localized Pleural Thickening Sub3</option>" +
+                                                                "<option value='Localized Pleural Thickening Sub4'>Localized Pleural Thickening Sub4</option>";
+                                break;
+                            case "Diffuse Pleural Thickening":
+                                subAbnormalityDropdown.innerHTML += "<option value='Diffuse Pleural Thickening Sub1'>Diffuse Pleural Thickening Sub1</option>" +
+                                                                "<option value='Diffuse Pleural Thickening Sub2'>Diffuse Pleural Thickening Sub2</option>" +
+                                                                "<option value='Diffuse Pleural Thickening Sub3'>Diffuse Pleural Thickening Sub3</option>" +
+                                                                "<option value='Diffuse Pleural Thickening Sub4'>Diffuse Pleural Thickening Sub4</option>";
+                                break;
+                            case "Pleural and Extrapleural Lesions":
+                                subAbnormalityDropdown.innerHTML += "<option value='Pleural and Extrapleural Lesions Sub1'>Pleural and Extrapleural Lesions Sub1</option>" +
+                                                                "<option value='Pleural and Extrapleural Lesions Sub2'>Pleural and Extrapleural Lesions Sub2</option>" +
+                                                                "<option value='Pleural and Extrapleural Lesions Sub3'>Pleural and Extrapleural Lesions Sub3</option>" +
+                                                                "<option value='Pleural and Extrapleural Lesions Sub4'>Pleural and Extrapleural Lesions Sub4</option>";
+                                break;
+                            case "Chest Wall Lesions":
+                                subAbnormalityDropdown.innerHTML += "<option value='Chest Wall Lesions Sub1'>Chest Wall Lesions Sub1</option>" +
+                                                                "<option value='Chest Wall Lesions Sub2'>Chest Wall Lesions Sub2</option>" +
+                                                                "<option value='Chest Wall Lesions Sub3'>Chest Wall Lesions Sub3</option>" +
+                                                                "<option value='Chest Wall Lesions Sub4'>Chest Wall Lesions Sub4</option>";
+                                break;
+                            case "Diaphragmatic Abnormalities":
+                                subAbnormalityDropdown.innerHTML += "<option value='Diaphragmatic Abnormalities Sub1'>Diaphragmatic Abnormalities Sub1</option>" +
+                                                                "<option value='Diaphragmatic Abnormalities Sub2'>Diaphragmatic Abnormalities Sub2</option>" +
+                                                                "<option value='Diaphragmatic Abnormalities Sub3'>Diaphragmatic Abnormalities Sub3</option>" +
+                                                                "<option value='Diaphragmatic Abnormalities Sub4'>Diaphragmatic Abnormalities Sub4</option>";
+                                break;
+                            }
+                            
+
+                            subAbnormality.appendChild(subAbnormalityDropdown);
+                            subAbnormality.style.display = "block";
+                    } else {
+                        subAbnormality.style.display = "none";
+                    }
+
+                    subAbnormalityDropdown.onchange = function() {
+                        saveAbnormality(this.id, this.value);
+                    };
+                }
+
+                console.log("Sending Main Abnormality:", mainAbnormality);
+                console.log("Sending Sub Abnormality:", subAbnormality);
+
+                function saveAbnormality(dropdownId, selectedValue) {
+                    // Assuming dropdownId contains 'details', this is a sub-abnormality
+                    if (dropdownId.includes('details')) {
+                        localStorage.setItem('selectedSubAbnormality', selectedValue);
+                    } else {
+                        // Else it is the main abnormality dropdown
+                        localStorage.setItem('selectedMainAbnormality', selectedValue);
+                    }
+                }
+            </script>
         </div>
     </div>
     

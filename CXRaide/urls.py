@@ -23,5 +23,6 @@ urlpatterns = [
     path('save_image_annotated/', views.save_image_annotated, name='save_image_annotated'),
     path('download/expert/<str:filename>/', views.download_expert_image, name='download_expert'),
     path('download/ai/<str:filename>/', views.download_ai_image, name='download_ai'),
+    path('api/save_abnormality', views.save_abnormality, name='save_abnormality'),
 ]
 

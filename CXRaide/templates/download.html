@@ -18,6 +18,7 @@
           border: none;
           margin-left: 3px;
           pointer-events: none;
+          background-color: white;
         }
     </style>
 </head>
@@ -83,7 +84,7 @@
                                 <h4>Chest X-ray Image (Expert Generated)</h4>
                                 <img src="{{ annotated_cxray.url }}" alt="Annotated Chest X-ray">
                                 <div class="buttons">
-                                    <a href="{% url 'download_pdf_expert_image' %}" download>
+                                    <a href="{% url 'download_pdf_expert_image' %}?mainAbnormality={{ mainAbnormality }}&subAbnormality={{ subAbnormality }}" download>
                                         <button class="download-button" id="download-button-raw">Download and Print</button>
                                     </a>
                                 </div>
@@ -106,37 +107,44 @@
                 </div>
             </div>
             <div class="col-sm-2 sidenav">
-                <p>Report</p>
                 <form>
                     <!-- Annotated By Expert Radio Button -->
                     <div class="well">
-                        <!-- Annotated By Experts Radio Button -->
                         <label for="annotatedByExperts">Annotated By Expert</label>
-                        <br>
-                        <input type="radio" id="annotatedByExperts" name="annotationType" value="experts">
-                        <!-- Abnormalities Read-Only Input for Experts -->
-                        <input type="text" readonly class="readonly-input" id="abnormalitiesExperts" name="abnormalitiesExperts" 
-                            value="Abnormalities">
+                        <div class="readonly-input">
+                            <p style="text-align: center;"><strong style="font-style: italic;  margin-left: 5px;">Abnormality:</strong><br><span id="abnormalityExpert"></span></p>
+                            <p style="text-align: center;"><strong style="font-style: italic; margin-left: 5px;">Sub-abnormality:</strong><br><span id="subAbnormalityExpert"></span></p>
+                        </div>
                     </div>
-                    <hr>
+                    <!-- Annotated By AI Radio Button -->
                     <div class="well">
-                        <!-- Annotated By AI Radio Button -->
                         <label for="annotatedByAI">Annotated By AI</label>
-                        <br>
-                        <input type="radio" id="annotatedByAI" name="annotationType" value="ai">
-                        <!-- Abnormalities Read-Only Input for AI -->
-                        <input type="text" class="readonly-input"  id="abnormalitiesAI" name="abnormalitiesAI" 
-                            value=" Abnormalities" readonly>
+                        <input type="text" readonly class="readonly-input" id="abnormalitiesAI" name="abnormalitiesAI">
                     </div>
                 </form>
-
-                <!-- <div class="well">
-                    <p>Findings:</p>
-                </div>
-                <div class="well">
-                    <p>Impressions:</p>
-                </div> -->
             </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var mainAbnormality = localStorage.getItem('selectedMainAbnormality') || 'No main abnormality selected';
+                    var subAbnormality = localStorage.getItem('selectedSubAbnormality') || 'No sub abnormality selected';
+                    
+                    document.getElementById('abnormalityExpert').innerText = mainAbnormality;
+                    document.getElementById('subAbnormalityExpert').innerText = subAbnormality;
+
+                    // Send data to server
+                    fetch('/api/save_abnormality', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            mainAbnormality: mainAbnormality,
+                            subAbnormality: subAbnormality
+                        })
+                    });
+                });
+
+            </script>
         </div>
     </div>
 
@@ -149,5 +157,4 @@
     <!-- Custom Script -->
     <script src="{% static 'js/annotationEdit.js' %}"></script>
 </body>
-
 </html>

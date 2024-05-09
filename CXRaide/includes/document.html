@@ -62,8 +62,11 @@
             page-break-before: always;
         }
         .images img{
-            width: 159mm;
-            height: 230mm;
+            width: 150mm;
+            height: 150mm;
+            text-align: center;
+            align-items: center;
+            display: flex;
         }
     </style>
 </head>
@@ -105,16 +108,14 @@
         <hr>
         <div class="interpretation">
             <h3>INTERPRETATION</h3>
-            <p>The trachea is _____ and appears to be ____ line. The lung fields are ____ and ____ in appearance. 
-                The pulmonary vasculatures are ____ and ____ within normal limits. The heart is ____ and ____ 
-                suggestive of __________. The diaphragm ____ and shows ____ on the [right/left] 
-                side, which may be indicative of __________. There are ____ abnormalities noted in the 
-                _____________ column, possibly fractures or degenerative changes. The soft tissue structures 
-                demonstrate ____ or abnormal densities in specific areas.</p>
+            <p>The patient undergoes a chest X-ray to assess the condition of the lungs.
+                On the PA chest film, it is important to examine all areas where the lungs border the diaphragm, the heart, 
+                and other mediastinal structures.</p>
         </div>
         <div class="abnormalities">
-            <h3>Abnormalities</h3>
-            <p>_____________</p>
+            <h3>The abnormality found is/are:</h3>
+            <p>Main Abnormality: {{ mainAbnormality }}</p>
+            <p>Sub Abnormality: {{ subAbnormality }}</p>
         </div>
         <div class="signature">
             <p>Athena Perez M.D., DPBR<br>RADIOLOGIST</p>
