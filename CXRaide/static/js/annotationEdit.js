@@ -1,5 +1,6 @@
 var stage;
 
+// MAIN FUNCTIONS
 document.addEventListener("DOMContentLoaded", function () {
   // element references
   var boxButton = document.getElementById("box-button");
@@ -62,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var currentGroup;
   var currentTransformer;
   var pointTransformer;
-  var selectedAbnormalities = [];    // This array will hold all selected abnormalities for boxes
+  var selectedAbnormalities = []; // This array will hold all selected abnormalities for boxes
 
   // utility functions
   function updateTextBackground(label, background) {
@@ -74,6 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
     background.visible(true); // Ensure background is visible
     layer.batchDraw();
   }
+
   function createPointTransformer() {
     pointTransformer = new Konva.Transformer({
       enabledAnchors: ["top-left", "top-right", "bottom-left", "bottom-right"],
@@ -86,6 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     layer.add(pointTransformer);
   }
+
   function attachTransformerToPoint(point) {
     // create and handle the transformer for points
     // ensure the existing transformer is detached
@@ -113,16 +116,19 @@ document.addEventListener("DOMContentLoaded", function () {
     pointTransformer.moveToTop(); // Ensure the transformer is on top of other elements
     layer.draw();
   }
+
   function handlePointClick(point) {
     pointTransformer.nodes([point]);
     pointTransformer.visible(true);
     layer.draw();
   }
+
   function attachTransformerToBox(box) {
     globalBoxTransformer.nodes([box]);
     globalBoxTransformer.moveToTop();
     layer.draw();
   }
+
   function createRulerMarks() {
     // Horizontal ruler on top
     for (let i = 0; i < stageWidth; i += 10) {
@@ -137,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
           y: 5,
           text: i / 50,
           fontSize: 15,
-          fill:'white'
+          fill: 'white'
         }));
       }
     }
@@ -155,11 +161,11 @@ document.addEventListener("DOMContentLoaded", function () {
           y: j,
           text: j / 50,
           fontSize: 15,
-          fill:'white',
+          fill: 'white',
         }));
       }
     }
-    
+
     layer.draw();
   }
 
@@ -270,10 +276,12 @@ document.addEventListener("DOMContentLoaded", function () {
     updateTextBackground(elements.label, elements.textBackground); // Update the background size for new label text
     layer.draw();
   });
+
   pointButton.addEventListener("click", function () {
     addingPoints = !addingPoints;
     stage.container().style.cursor = addingPoints ? "crosshair" : "default"; // Change cursor on POINT button click
   });
+
   abnormalitiesDropdown.addEventListener("change", function () {
     if (currentGroup) {
       var label = currentGroup.children.find(
@@ -285,8 +293,8 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
-  saveButton.addEventListener("click", function () {
 
+  saveButton.addEventListener("click", function () {
     // Hide the transformers before capturing the data URL of the stage
     if (globalBoxTransformer.nodes().length) {
       globalBoxTransformer.nodes([]);
@@ -310,7 +318,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 500);
       }
     };
-    
+
     // Send the dataURL as a POST parameter named 'image_data'
     var params = "image_data=" + encodeURIComponent(dataURL);
     xhr.send(params);
@@ -400,6 +408,9 @@ document.addEventListener("DOMContentLoaded", function () {
   createPointTransformer();
   createRulerMarks();
 });
+
+
+
 
 // HERE FOR ZOOM
 document.addEventListener("DOMContentLoaded", function () {
