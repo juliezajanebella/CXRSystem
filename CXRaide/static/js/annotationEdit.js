@@ -409,9 +409,6 @@ document.addEventListener("DOMContentLoaded", function () {
   createRulerMarks();
 });
 
-
-
-
 // HERE FOR ZOOM
 document.addEventListener("DOMContentLoaded", function () {
   var zoomInButton = document.getElementById("zoom-in-button"); // Assuming you have this button in your HTML

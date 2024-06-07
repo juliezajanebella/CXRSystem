@@ -9,7 +9,6 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages                          
 from .models import Radiologist, RawXray, AnnotatedImage, AnnotatedImageByAi
-# from CXRaide.functions import handle_uploaded_file
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password, check_password
 import os
@@ -20,12 +19,15 @@ from django.core.files.base import ContentFile
 import tensorflow as tf
 import numpy as np
 from PIL import Image, ImageDraw
-import io
+import io 
 import base64
 from django.conf import settings
 from weasyprint import HTML
 from django.template.loader import render_to_string
-
+from pydicom import dcmread
+from PIL import Image, UnidentifiedImageError
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
 # main functions
@@ -84,13 +86,44 @@ def home(request):
         raw_cxray = request.FILES["raw_cxray"]
         filename, file_extension = os.path.splitext(raw_cxray.name)
 
-        # calling the handler of uploaded file
-        # handle_uploaded_file(raw_cxray)
-        RawXray.objects.create(raw_cxray_filename=filename, raw_cxray_image=raw_cxray)
+        try:
+            if file_extension.lower() in ['.dcm', '.dicom']:
+                # Load DICOM file from uploaded file
+                dicom_data = dcmread(raw_cxray)
 
-        context = {'raw_cxray_filename': filename, 'raw_cxray': raw_cxray}
-        return render(request, 'loadImage.html', context)
-    return render(request, 'home.html')   # Return None if no file was uploaded
+                # Convert DICOM to image with proper normalization
+                pixel_array = dicom_data.pixel_array
+                pixel_array = (pixel_array - np.min(pixel_array)) / (np.max(pixel_array) - np.min(pixel_array)) * 255
+                pixel_array = pixel_array.astype(np.uint8)
+                image = Image.fromarray(pixel_array)
+            else:
+                # For other image types, directly open the image
+                image = Image.open(raw_cxray)
+
+            # Ensure the image is in a format compatible with JPEG or PNG
+            if image.mode != 'RGB':
+                image = image.convert('RGB')
+
+            # Convert the image to JPEG or PNG
+            buffer = BytesIO()
+            image_format = 'JPEG' if file_extension.lower() != '.png' else 'PNG'
+            image.save(buffer, format=image_format)
+            buffer.seek(0)
+
+            # Create an InMemoryUploadedFile for the model
+            jpeg_image = InMemoryUploadedFile(buffer, None, f"{filename}.{image_format.lower()}", f'image/{image_format.lower()}', buffer.tell(), None)
+            
+            # Save JPEG image to model
+            raw_xray_instance = RawXray.objects.create(raw_cxray_filename=filename, raw_cxray_image=jpeg_image)
+            raw_cxray_image_url = raw_xray_instance.raw_cxray_image.url
+
+            context = {'raw_cxray_filename': filename , 'raw_cxray': raw_cxray_image_url}
+            return render(request, 'loadImage.html', context)
+        except Exception as e:
+            print(f"Error processing file: {e}")
+            return render(request, 'home.html', {'error': str(e)})
+
+    return render(request, 'home.html')
 
 # Pass    
 def change_pass(request):

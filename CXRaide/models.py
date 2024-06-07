@@ -15,7 +15,7 @@ class Radiologist(models.Model): # details of user (radiologists)
 class RawXray(models.Model): # for raw xray images
     raw_cxray_id = models.AutoField(primary_key=True, verbose_name='Raw CXray Image ID')
     raw_cxray_filename = models.CharField(max_length=100, verbose_name='Raw CXRay File Name')
-    raw_cxray_image = models.FileField(upload_to="raw_images/", verbose_name='Raw CXray Image')
+    raw_cxray_image = models.ImageField(upload_to="raw_images/", verbose_name='Raw CXray Image')
     
     def __str__(self):
         return self.raw_cxray_filename
